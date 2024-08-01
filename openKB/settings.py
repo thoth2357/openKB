@@ -158,3 +158,5 @@ MDEDITOR_CONFIGS = {
         'language': 'en'  # zh / en / es 
     }
 }
+
+AUTH_USER_MODEL = 'kb.CustomUser'

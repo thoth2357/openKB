@@ -44,14 +44,15 @@
                     <div class="card-body p-0">
                         <table class="table m-0">
                             <tbody>
-                                <tr class="py-3">
+                                {% for article in published_articles %}
+                                    <tr class="py-3">
                                     <td class="py-3"><a href="#">Computer</a></td>
                                     <td class="text-right py-3">
                                         <strong>View count:</strong> 2 / 
                                         <strong>Date:</strong> 31/07/2024 3:55PM
                                     </td>
                                 </tr>
-                                <!-- Add more rows as needed -->
+                                {% endfor %}                                
                             </tbody>
                         </table>
                     </div>

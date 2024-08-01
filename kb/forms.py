@@ -1,6 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from mdeditor.fields import MDTextFormField
+from django.contrib.auth.forms import AuthenticationForm
+
 from kb.models import Article
 
 class MDEditorForm(forms.ModelForm):
@@ -39,3 +41,8 @@ class MDEditorForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+class LoginForm(AuthenticationForm):
+    username = forms.EmailField(label="Email", widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Email address'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
