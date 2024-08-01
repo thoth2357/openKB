@@ -19,18 +19,16 @@
             <div class="col-md-2">
                 <div class="card">
                     <div class="card-header bg-light border-bottom pb-2">
-                        <p class="mb-0" style="white-space: wrap;">Featured articles</p>
+                        <p class="mb-0" style="white-space: nowrap;">Featured articles</p>
                     </div>
                     <div class="card-body p-0">
                         <table class="table m-0">
                             <tbody>
-                                <!-- Add rows as needed -->
-                                <tr class="py-3">
-                                    <td class="py-3"><a href="#">Article 1</a></td>
-                                </tr>
-                                <tr class="py-3">
-                                    <td class="py-3"><a href="#">Article 2</a></td>
-                                </tr>
+                                {% for article in  featured_articles%}
+                                    <tr class="py-3">
+                                        <td class="py-3"><a href="#">Article 1</a></td>
+                                    </tr>
+                                {% endfor %}                                
                             </tbody>
                         </table>
                     </div>
@@ -63,5 +61,6 @@
 {% endblock content %}
 {% block misc %}
     {% include "footer.html" %}
+    {% include "messages.html" %}
 {% endblock misc %}
 

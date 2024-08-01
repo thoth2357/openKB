@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="{% url "home" %}"><i class="fas fa-home"></i> openKB</a>
+        <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-home"></i> openKB</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -13,9 +13,11 @@
                         <i class="fas fa-users"></i> Users
                     </a>
                     <div class="dropdown-menu" aria-labelledby="usersDropdown">
-                        <a class="dropdown-item" href="#"><i class="fas fa-user-plus"></i> New</a>
-                        <a class="dropdown-item" href="#"><i class="fas fa-user-edit"></i> Edit</a>
-                        <a class="dropdown-item" href="#"><i class="fas fa-user"></i> My account</a>
+                        {% if user.is_superuser %}
+                        <a class="dropdown-item" href="{% url 'new-user' %}">New</a>
+                        <a class="dropdown-item" href="{% url 'edit-users' %}">Edit</a>
+                        {% endif %}
+                        <a class="dropdown-item" href="{% url 'my-account' %}">My Account</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -24,9 +26,14 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="articleDropdown">
                         <a class="dropdown-item" href="#"><i class="fas fa-plus"></i> New</a>
-                        <a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Edit</a>
+                        {% if user.is_superuser %}
+                        <a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Edit All</a>
+                        {% else %}
+                        <a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Edit Your Articles</a>
+                        {% endif %}
                     </div>
                 </li>
+                {% if user.is_superuser %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-cogs"></i> Admin
@@ -39,8 +46,9 @@
                         <a class="dropdown-item" href="#"><i class="fas fa-trash"></i> Cleanup Files</a>
                     </div>
                 </li>
+                {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "logout" %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </li>
                 {% else %}
                 <!-- Display these items if the user is not logged in -->
@@ -48,7 +56,7 @@
                     <a class="nav-link" href="{% url "suggest" %}"><i class="fas fa-lightbulb"></i> Suggest</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "login" %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
                 </li>
                 {% endif %}
             </ul>

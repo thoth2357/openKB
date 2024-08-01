@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+{% include "nav.html" %}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Users</li>
+        </ol>
+    </nav>
+    
+    <h1>Users</h1>
+
+    <div class="d-flex justify-content-end mb-2">
+        <a href="{% url 'new-user' %}" class="btn btn-primary">New User</a>
+    </div>
+
+    {% for user in users %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5>User: {{ user.get_full_name }} - ({{ user.email }})</h5>
+            <p>Role: {% if user.is_superuser %}Admin <span class="badge badge-success">✔</span>{% else %}User{% endif %}</p>
+            <a href="{% url 'edit-user' user.id %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-pencil-square"></i> Edit
+            </a>
+            <a href="{% url 'delete-user' user.id %}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i> Delete
+            </a>
+        </div>
+    </div>
+    {% empty %}
+    <p>No users found.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -20,6 +20,7 @@ class Article(models.Model):
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
+    
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username'] 
