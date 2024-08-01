@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}openKB{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">openKB</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="usersDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Users
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="usersDropdown">
+                            <a class="dropdown-item" href="{% url 'add_user' %}">New</a>
+                            <a class="dropdown-item" href="{% url 'edit_user_list' %}">Edit</a>
+                            <a class="dropdown-item" href="{% url 'my_account' %}">My account</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="articleDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Article
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="articleDropdown">
+                            <a class="dropdown-item" href="{% url 'add_article' %}">New</a>
+                            <a class="dropdown-item" href="{% url 'edit_article_list' %}">Edit</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Admin
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <a class="dropdown-item" href="{% url 'settings' %}">Settings</a>
+                            <a class="dropdown-item" href="{% url 'files' %}">Files</a>
+                            <a class="dropdown-item" href="{% url 'import' %}">Import</a>
+                            <a class="dropdown-item" href="{% url 'export' %}">Export</a>
+                            <a class="dropdown-item" href="{% url 'cleanup_files' %}">Cleanup Files</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container" style="margin-top: 80px;">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="row">
+    <form action="{% url 'search' %}" id="search_form" method="post">
+        {% csrf_token %}
+        <div class="col-md-8 offset-md-2 search_bar">
+            <div class="input-group">
+                <input type="text" name="frm_search" id="frm_search" autocomplete="off" class="form-control input-lg" placeholder="Search the knowledge base">
+                <span class="input-group-btn">
+                    <button class="btn btn-success btn-lg" id="btn_search" type="submit">Search</button>
+                </span>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div style="margin-top: 30px;">
+            <ul class="list-group">
+                <li class="list-group-item list-group-heading">Top articles</li>
+                {% for article in top_articles %}
+                    <li class="list-group-item">
+                        <h5>
+                            <a href="{% url 'article_detail' article.id %}">{{ article.title }}</a>
+                            <span class="pull-right view_count"><strong>Date:</strong> {{ article.published_date }}</span>
+                            <span class="pull-right view_count"><strong>View count:</strong> {{ article.view_count }}</span>
+                        </h5>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

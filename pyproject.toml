@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "openkb"
+version = "0.1.0"
+description = "OpenKb alternative with django"
+authors = ["thoth2357"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Django = "^5.0.7"
+django-mdeditor = "^0.1.20"
+mistune = "^3.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
