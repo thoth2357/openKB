@@ -155,9 +155,8 @@ class ArticleForm(forms.ModelForm):
 
     def clean_permalink(self):
         permalink = self.cleaned_data.get('permalink')
-        print(permalink, self.instance.pk, self.instance)
         if not permalink:
-            raise ValidationError('Permalink cannot be empty.')
+            pass
         # Check if the permalink is used by any other article except the current one
         if Article.objects.filter(permalink=permalink).exclude(pk=self.instance.pk).exists():
             raise ValidationError('This permalink is already in use. Please use another one.')
