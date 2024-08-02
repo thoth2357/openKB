@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block content %}
+{% include "nav.html" %}
+<div class="container mt-5">
+    <h1>Articles</h1>
+    <div class="row mb-3">
+        <div class="col">
+            <input type="text" id="filter_articles" class="form-control" placeholder="Filter articles">
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" onclick="filterArticles()">Filter</button>
+            <button class="btn btn-secondary" onclick="resetFilter()">Reset</button>
+            <button class="btn btn-info">All</button>
+        </div>
+    </div>
+    
+    <!-- Article Header -->
+    <div class="row font-weight-bold border-bottom pb-2 mb-2">
+        <div class="col-md-10">
+            Article - Recent
+        </div>
+        <div class="col-md-2 text-right">
+            Published
+        </div>
+    </div>
+
+    <!-- List of articles -->
+    <div class="list-group">
+        {% for article in articles %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <a href="{% url 'edit_article' article.id %}">
+                {{ article.title }} {% if article.is_suggestion %}(SUGGESTION){% endif %}
+                </a>
+            </div>
+            <div>
+                <input type="checkbox" {% if article.published %}checked{% endif %} onclick="togglePublished({{ article.id }})">
+                <a href="{% url 'delete_article' article.id %}" onclick="return confirm('Are you sure?');"><i class="fas fa-trash"></i></a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="list-group-item">No articles found.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+function filterArticles() {
+    const filterValue = document.getElementById('filter_articles').value;
+    window.location.href = `{% url 'article_list' %}?filter=${filterValue}`;
+}
+
+function resetFilter() {
+    window.location.href = `{% url 'article_list' %}`;
+}
+
+function togglePublished(articleId) {
+    fetch(`/articles/${articleId}/toggle-publish/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    }).then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+}
+</script>
+{% endblock %}

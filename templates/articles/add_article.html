@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Article{% endblock %}
+
+{% block content %}
+{% include "nav.html" %}
+<form method="post" action="{% url 'add_article' %}">
+    {% csrf_token %}
+    {{ form.media }}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="id_title">Article Title *</label>
+                {{ form.title }}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="id_status">Status</label>
+                {{ form.status }}
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="id_content">Article Body (Markdown) *</label>
+        {{ form.content }}
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="id_keywords">Keywords</label>
+                {{ form.keywords }}
+            </div>
+        </div>
+        <div class="col-md-8">
+            <label for="id_permalink">Permalink</label>
+            <div class="input-group mb-3"> <!-- Added margin-bottom (mb-3) for spacing -->
+                {{ form.permalink }}
+                <div class="input-group-append">
+                    <button type="button" id="validate_permalink" class="btn btn-success">Validate</button>
+                    <button type="button" id="generate_permalink" class="btn btn-info">Generate</button>
+                    <button type="button" id="slug_from_title" class="btn btn-warning" disabled>Slug from Title</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.getElementById('id_title');
+    const slugButton = document.getElementById('slug_from_title');
+
+    function enableSlugButton() {
+        slugButton.disabled = titleInput.value.trim().length < 3;
+    }
+
+    titleInput.addEventListener('input', enableSlugButton);
+
+    document.getElementById('generate_permalink').addEventListener('click', function() {
+        const randomSixDigits = Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('id_permalink').value = randomSixDigits;
+    });
+
+    document.getElementById('validate_permalink').addEventListener('click', function() {
+        const permalink = document.getElementById('id_permalink').value;
+        if (!permalink) {
+            alert("Permalink cannot be empty.");
+            return;
+        }
+        fetch(`/validate_permalink/?permalink=${permalink}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_taken) {
+                    alert("This permalink is already in use. Please choose another.");
+                } else {
+                    alert("Permalink is available.");
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    document.getElementById('slug_from_title').addEventListener('click', function() {
+        const slug = titleInput.value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        document.getElementById('id_permalink').value = slug;
+    });
+
+    enableSlugButton(); // Initial check on page load
+});
+</script>
+{% endblock %}

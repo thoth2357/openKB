@@ -1,0 +1,14 @@
+<!-- users/confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+{% include "nav.html" %}
+<div class="container mt-4">
+    <h2>Are you sure you want to delete "{{ object.get_full_name }}"?</h2>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'edit-users' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

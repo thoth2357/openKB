@@ -113,3 +113,59 @@ class MyAccountForm(UserChangeForm):
         if commit:
             user.save()
         return user
+
+class ArticleForm(forms.ModelForm):
+    permalink = forms.CharField(required=False, widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Permalink for the article'
+    }))
+    status = forms.ChoiceField(choices=[('draft', 'Draft'), ('published', 'Published')], widget=forms.Select(attrs={
+        'class': 'form-control'
+    }))
+
+    class Meta:
+        model = Article
+        fields = ['title', 'content', 'keywords', 'permalink', 'status', 'seo_title', 'seo_description']
+
+    def __init__(self, *args, **kwargs):
+        super(ArticleForm, self).__init__(*args, **kwargs)
+        # Update form field attributes here as needed
+        # Setting initial values based on instance attributes
+        if self.instance and self.instance.pk:
+            self.fields['status'].initial = 'published' if self.instance.published else 'draft'
+
+        self.fields['title'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Enter article title'
+        })
+        self.fields['content'].widget.attrs.update({
+            'class': 'form-control markdown-editor',
+            'placeholder': 'Write your article content here...'
+        })
+        self.fields['keywords'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Enter keywords separated by commas'
+        })
+        self.fields['seo_title'].widget.attrs.update({'class': 'form-control'})
+        self.fields['seo_description'].widget.attrs.update({'class': 'form-control'})
+
+        self.fields['keywords'].required = False
+        self.fields['seo_title'].required = False
+        self.fields['seo_description'].required = False
+
+    def clean_permalink(self):
+        permalink = self.cleaned_data.get('permalink')
+        print(permalink, self.instance.pk, self.instance)
+        if not permalink:
+            raise ValidationError('Permalink cannot be empty.')
+        # Check if the permalink is used by any other article except the current one
+        if Article.objects.filter(permalink=permalink).exclude(pk=self.instance.pk).exists():
+            raise ValidationError('This permalink is already in use. Please use another one.')
+        return permalink
+    
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if len(title) < 5:
+            raise ValidationError('The title must be at least 5 characters long.')
+        return title

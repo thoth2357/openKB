@@ -3,12 +3,41 @@ from django.views import View
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import login, authenticate, logout, get_user_model
+from django.contrib.messages.views import SuccessMessageMixin
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required, permission_required
 
 
-from kb.forms import MDEditorForm, LoginForm, CustomUserCreationForm, EditUserForm,MyAccountForm
+
+from kb.forms import MDEditorForm, LoginForm, CustomUserCreationForm, EditUserForm,MyAccountForm, ArticleForm
 from kb.models import Article, CustomUser
 
 # Create your views here.
+
+def validate_permalink(request):
+    permalink = request.GET.get('permalink', None)
+    data = {
+        'is_taken': Article.objects.filter(permalink=permalink).exists()
+    }
+    return JsonResponse(data)
+
+@require_POST
+@csrf_exempt  # Only use csrf_exempt if you are handling CSRF token in another way for AJAX calls
+@login_required
+def toggle_publish(request, pk):
+    try:
+        article = Article.objects.get(pk=pk)
+        article.published = not article.published
+        article.save()
+        return JsonResponse({'status': 'success', 'published': article.published})
+    except Article.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Article not found'}, status=404)
+    
 class HomeView(View):
     """
     Class based view for the home page.
@@ -78,14 +107,6 @@ class LogoutView(View):
         return redirect('home')
     
 
-
-
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView
-from django.urls import reverse_lazy
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
 class NewUserView(PermissionRequiredMixin, CreateView):
     model = get_user_model()
     form_class = CustomUserCreationForm
@@ -150,3 +171,69 @@ class MyAccountView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         messages.success(self.request, "Account updated successfully.")
         return super().form_valid(form)
+
+
+class AddArticleView(SuccessMessageMixin, CreateView):
+    model = Article
+    form_class = ArticleForm
+    template_name = 'articles/add_article.html'
+    success_url = reverse_lazy('article_list')  # Adjust the redirect URL as needed
+    success_message = "Article added successfully!"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Adjust the published status based on the status field if necessary
+        self.object.published = form.cleaned_data['status'] == 'published'
+        self.object.save()
+        messages.success(self.request, "New article added successfully!")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        # Additional handling for when the form is not valid
+        print("got here o00", form.errors)
+        return super().form_invalid(form)
+
+
+class ArticleListView(ListView):
+    model = Article
+    template_name = 'articles/article_list.html'
+    context_object_name = 'articles'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        filter_value = self.request.GET.get('filter', '')
+
+        # Adding order by to sort articles by the most recent
+        queryset = queryset.order_by('-updated')  # Replace 'updated' with 'created' if that's your field
+
+        if filter_value:
+            queryset = queryset.filter(title__icontains=filter_value)
+
+        return queryset
+
+class EditArticleView(UpdateView):
+    model = Article
+    form_class = ArticleForm
+    template_name = 'articles/edit_article.html'
+    context_object_name = 'article'
+
+    def get_success_url(self):
+        return reverse_lazy('edit_article', kwargs={'pk': self.object.pk})
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Set the article's published state based on the status field
+        self.object.published = form.cleaned_data['status'] == 'published'
+        self.object.save()
+        messages.success(self.request, "Article updated successfully!")
+        return super().form_valid(form)
+
+class DeleteArticleView(DeleteView):
+    model = Article
+    template_name = 'articles/confirm_delete.html'
+    context_object_name = 'article'
+    success_url = reverse_lazy('article_list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "Article deleted successfully!")
+        return super().delete(request, *args, **kwargs)

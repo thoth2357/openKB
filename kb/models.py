@@ -12,7 +12,9 @@ class Article(models.Model):
     keywords = models.CharField(max_length=255)
     published = models.BooleanField(default=False)
     view_count = models.PositiveIntegerField(default=0)  # Added field for tracking views
-
+    permalink = models.SlugField(max_length=255, unique=True, default='')
+    seo_title = models.CharField(max_length=255, default='')
+    seo_description = models.TextField(default='')
     
     def __str__(self):
         return self.title

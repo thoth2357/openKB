@@ -25,11 +25,11 @@
                         <i class="fas fa-newspaper"></i> Article
                     </a>
                     <div class="dropdown-menu" aria-labelledby="articleDropdown">
-                        <a class="dropdown-item" href="#"><i class="fas fa-plus"></i> New</a>
+                        <a class="dropdown-item" href="{% url "add_article" %}"><i class="fas fa-plus"></i> New</a>
                         {% if user.is_superuser %}
-                        <a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Edit All</a>
+                        <a class="dropdown-item" href="{% url "article_list" %}"><i class="fas fa-edit"></i> Edit All</a>
                         {% else %}
-                        <a class="dropdown-item" href="#"><i class="fas fa-edit"></i> Edit Your Articles</a>
+                        <a class="dropdown-item" href="{% url "article_list" %}"><i class="fas fa-edit"></i> Edit All</a>
                         {% endif %}
                     </div>
                 </li>
