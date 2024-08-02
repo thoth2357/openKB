@@ -1,5 +1,5 @@
 from django.urls import path
-from kb.views import HomeView, SuggestView,LoginView,LogoutView, NewUserView, EditUserView, MyAccountView, UserListView, DeleteUserView, AddArticleView, validate_permalink, ArticleListView,EditArticleView,DeleteArticleView, toggle_publish
+from kb.views import HomeView, SuggestView,LoginView,LogoutView, NewUserView, EditUserView, MyAccountView, UserListView, DeleteUserView, AddArticleView, validate_permalink, ArticleListView,EditArticleView,DeleteArticleView, toggle_publish, ArticleDetailView, vote_article
 
 
 # urlpatterns
@@ -25,7 +25,12 @@ urlpatterns = [
     path('articles/<int:pk>/edit/', EditArticleView.as_view(), name='edit_article'),
     path('articles/<int:pk>/delete/', DeleteArticleView.as_view(), name='delete_article'),
     path('articles/<int:pk>/toggle-publish/', toggle_publish, name='toggle_publish'),
+    path('articles/<int:pk>/', ArticleDetailView.as_view(), name='article_detail'),
+
+    
+    
     # Misc Urls
     path('validate_permalink/', validate_permalink, name='validate_permalink'),
+    path('article/<int:pk>/vote/', vote_article, name='article_vote'),
 
 ]

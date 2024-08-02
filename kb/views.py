@@ -6,17 +6,20 @@ from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView
+from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required, permission_required
+from django.shortcuts import get_object_or_404
+
 
 
 
 from kb.forms import MDEditorForm, LoginForm, CustomUserCreationForm, EditUserForm,MyAccountForm, ArticleForm
 from kb.models import Article, CustomUser
 
+import json
 # Create your views here.
 
 def validate_permalink(request):
@@ -25,6 +28,26 @@ def validate_permalink(request):
         'is_taken': Article.objects.filter(permalink=permalink).exists()
     }
     return JsonResponse(data)
+
+
+@csrf_exempt
+def vote_article(request, pk):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            article = Article.objects.get(pk=pk)
+            if data['isPositive']:
+                article.votes += 1
+            else:
+                article.votes -= 1
+            article.save()
+            return JsonResponse({'votes': article.votes})
+        except Article.DoesNotExist:
+            return JsonResponse({'error': 'Article not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
 
 @require_POST
 @csrf_exempt  # Only use csrf_exempt if you are handling CSRF token in another way for AJAX calls
@@ -184,6 +207,7 @@ class AddArticleView(SuccessMessageMixin, CreateView):
         self.object = form.save(commit=False)
         # Adjust the published status based on the status field if necessary
         self.object.published = form.cleaned_data['status'] == 'published'
+        self.object.author = self.request.user
         self.object.save()
         messages.success(self.request, "New article added successfully!")
         return super().form_valid(form)
@@ -237,3 +261,17 @@ class DeleteArticleView(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(request, "Article deleted successfully!")
         return super().delete(request, *args, **kwargs)
+
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'articles/article_detail.html'
+    context_object_name = 'article'
+
+    def get_object(self):
+        # This method is called when the view is instantiated and will
+        # increment the views count every time the article is accessed.
+        obj = super().get_object()
+        obj.view_count += 1
+        obj.save()
+        return obj
