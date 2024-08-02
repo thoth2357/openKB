@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
 from django.urls import reverse_lazy
@@ -268,10 +268,27 @@ class ArticleDetailView(DetailView):
     template_name = 'articles/article_detail.html'
     context_object_name = 'article'
 
-    def get_object(self):
-        # This method is called when the view is instantiated and will
-        # increment the views count every time the article is accessed.
-        obj = super().get_object()
+    def get_object(self, queryset=None):
+        # Enhanced to use 'pk' or 'slug' from URL kwargs
+        queryset = queryset or self.get_queryset()
+        print(self.kwargs)
+        if 'slug' in self.kwargs:
+            # Fetch by permalink if 'slug' is in kwargs
+            obj = get_object_or_404(queryset, permalink=self.kwargs['slug'])
+        elif 'pk' in self.kwargs:
+            # Fetch by primary key if 'pk' is in kwargs
+            obj = get_object_or_404(queryset, pk=self.kwargs['pk'])
+        else:
+            # If neither 'pk' nor 'slug', raise Http404
+            raise Http404("No Article matches the given query.")
+        
+
+        # Increment the view count on successful retrieval
         obj.view_count += 1
         obj.save()
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['absolute_url'] = self.request.build_absolute_uri()
+        return context

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from kb.views import HomeView, SuggestView,LoginView,LogoutView, NewUserView, EditUserView, MyAccountView, UserListView, DeleteUserView, AddArticleView, validate_permalink, ArticleListView,EditArticleView,DeleteArticleView, toggle_publish, ArticleDetailView, vote_article
 
 
@@ -25,7 +25,8 @@ urlpatterns = [
     path('articles/<int:pk>/edit/', EditArticleView.as_view(), name='edit_article'),
     path('articles/<int:pk>/delete/', DeleteArticleView.as_view(), name='delete_article'),
     path('articles/<int:pk>/toggle-publish/', toggle_publish, name='toggle_publish'),
-    path('articles/<int:pk>/', ArticleDetailView.as_view(), name='article_detail'),
+    path('articles/<int:pk>/', ArticleDetailView.as_view(), name='article_detail_by_pk'),
+    path('articles/<slug:slug>/', ArticleDetailView.as_view(), name='article_detail'),
 
     
     

@@ -62,9 +62,14 @@ document.addEventListener('DOMContentLoaded', function() {
     titleInput.addEventListener('input', enableSlugButton);
 
     document.getElementById('generate_permalink').addEventListener('click', function() {
-        const randomSixDigits = Math.floor(100000 + Math.random() * 900000);
-        document.getElementById('id_permalink').value = randomSixDigits;
-    });
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 6; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    document.getElementById('id_permalink').value = result;
+});
 
     document.getElementById('validate_permalink').addEventListener('click', function() {
         const permalink = document.getElementById('id_permalink').value;

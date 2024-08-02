@@ -4,34 +4,58 @@
 
 {% block content %}
 {% include "nav.html" %}
-
 <div class="container mt-5">
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.content | safe }}</p>
-
-    <div class="article-details">
-        <div class="row">
-            <div class="col-md-6">
-                <p><strong>Published date:</strong> {{ article.created|date:"d/m/Y H:iA" }}</p>
-                <p><strong>Permalink:</strong> <a href="{{ request.build_absolute_uri }}">{{ request.build_absolute_uri }}</a></p>
-            </div>
-            <div class="col-md-6 text-md-right">
-                <p><strong>Last updated:</strong> {{ article.updated|date:"d/m/Y H:iA" }}</p>
-                <p><strong>Author:</strong> {{ article.author }}</p>
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search the knowledge base" aria-label="Search the knowledge base" aria-describedby="button-search" style="height: 50px; font-size: 1.2em;">
+                <div class="input-group-append">
+                    <button class="btn btn-success" type="button" id="button-search" style="height: 50px; font-size: 1.2em;">Search</button>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <p>Was this article helpful?
-                    <button onclick="incrementVote({{ article.id }}, true)">👍</button>
-                    <button onclick="incrementVote({{ article.id }}, false)">👎</button>
-                    Votes: <span id="vote-count">{{ article.votes }}</span>
-                </p>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-8">
+            <h1>{{ article.title }}</h1>
+            <p>{{ article.content | safe }}</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-end">
+        <div class="col-md-4 text-right">
+            <p>Was this article helpful?
+                <button onclick="incrementVote({{ article.id }}, true)">👍</button>
+                <button onclick="incrementVote({{ article.id }}, false)">👎</button>
+                Votes: <span id="vote-count">{{ article.votes }}</span>
+            </p>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    Article details:
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Published date:</strong> {{ article.created|date:"d/m/Y H:iA" }}</p>
+                            <p><strong>Author:</strong> {{ article.author }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Last updated:</strong> {{ article.updated|date:"d/m/Y H:iA" }}</p>
+                            <p><strong>Permalink:</strong> <a href="{{ article.permalink }}">{{ article.permalink }}</a></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -49,9 +73,8 @@ function incrementVote(articleId, isPositive) {
       .then(data => {
         if (data.votes !== undefined) {
             document.getElementById('vote-count').innerText = data.votes;
-            // alert('Thanks for voting! Total votes: ' + data.votes);
         } else {
-            // alert('Error voting: ' + data.error);
+            console.error('Error voting: ' + data.error);
         }
       })
       .catch(error => {
@@ -59,7 +82,5 @@ function incrementVote(articleId, isPositive) {
         alert('Failed to vote.');
       });
 }
-
-
 </script>
 {% endblock %}

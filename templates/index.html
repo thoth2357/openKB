@@ -44,7 +44,11 @@
                             <tbody>
                                 {% for article in published_articles %}
                                     <tr class="py-3">
-                                    <td class="py-3"><a href="{% url 'article_detail' article.id %}">{{article.title}}</a></td>
+                                    <td class="py-3">
+                                        <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
+                                    </td>
+                                    
+
                                     <td class="text-right py-3">
                                         <strong>View count:</strong> {{article.view_count}} / 
                                         <strong>Date:</strong> {{article.created|date:"d/m/Y H:iA"}}

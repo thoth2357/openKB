@@ -110,10 +110,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generatePermalink() {
-        const randomSixDigits = Math.floor(100000 + Math.random() * 900000);
-        permalinkInput.value = randomSixDigits.toString();
-        console.log('Generated permalink:', permalinkInput.value);
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 6; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
+    permalinkInput.value = result;
+}
 
     function createSlugFromTitle() {
         const slug = titleInput.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
