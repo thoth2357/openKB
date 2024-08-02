@@ -13,13 +13,15 @@ class Article(models.Model):
     published = models.BooleanField(default=False)
     view_count = models.PositiveIntegerField(default=0)  # Added field for tracking views
     votes = models.IntegerField(default=0)
-    permalink = models.SlugField(max_length=255, unique=True, default='')
+    permalink = models.SlugField(max_length=255, default='', null=True)
     seo_title = models.CharField(max_length=255, default='')
     seo_description = models.TextField(default='')
     author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
     
     def __str__(self):
         return self.title
+    
+    
 
 
 class CustomUser(AbstractUser):

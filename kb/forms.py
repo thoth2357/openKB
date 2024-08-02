@@ -154,12 +154,10 @@ class ArticleForm(forms.ModelForm):
         self.fields['seo_description'].required = False
 
     def clean_permalink(self):
-        permalink = self.cleaned_data.get('permalink')
-        if not permalink:
-            pass
-        # Check if the permalink is used by any other article except the current one
-        if Article.objects.filter(permalink=permalink).exclude(pk=self.instance.pk).exists():
-            raise ValidationError('This permalink is already in use. Please use another one.')
+        permalink = self.cleaned_data.get('permalink', '').strip()
+        if permalink and Article.objects.filter(permalink=permalink).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('This permalink is already in use. Please use another one.')
+        # Allow empty permalink to clear the field
         return permalink
     
 
@@ -168,3 +166,11 @@ class ArticleForm(forms.ModelForm):
         if len(title) < 5:
             raise ValidationError('The title must be at least 5 characters long.')
         return title
+    
+    def save(self, commit=True):
+        instance = super(ArticleForm, self).save(commit=False)
+        # Set permalink to None if cleaned data is empty
+        instance.permalink = self.cleaned_data['permalink'] if self.cleaned_data['permalink'] else None
+        if commit:
+            instance.save()
+        return instance

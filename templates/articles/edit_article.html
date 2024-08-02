@@ -4,6 +4,7 @@
 
 {% block content %}
 {% include "nav.html" %}
+{% include "messages.html" %}
 <div class="container mt-5">
     <h1>Edit Article</h1>
     <form method="post" action="{% url 'edit_article' article.pk %}">

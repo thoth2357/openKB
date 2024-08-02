@@ -107,7 +107,6 @@ class LoginView(View):
         return render(request, "login.html", context)
 
     def post(self, request):
-        print("hrer")
         username = request.POST["username"]
         password = request.POST["password"]
         # print(username, password, 'dtals')
@@ -251,6 +250,12 @@ class EditArticleView(UpdateView):
         self.object.save()
         messages.success(self.request, "Article updated successfully!")
         return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        # Re-render the form with errors
+        messages.error(self.request, "Please correct the errors below.")
+        return self.render_to_response(self.get_context_data(form=form))
+    
 
 class DeleteArticleView(DeleteView):
     model = Article
@@ -271,7 +276,6 @@ class ArticleDetailView(DetailView):
     def get_object(self, queryset=None):
         # Enhanced to use 'pk' or 'slug' from URL kwargs
         queryset = queryset or self.get_queryset()
-        print(self.kwargs)
         if 'slug' in self.kwargs:
             # Fetch by permalink if 'slug' is in kwargs
             obj = get_object_or_404(queryset, permalink=self.kwargs['slug'])
