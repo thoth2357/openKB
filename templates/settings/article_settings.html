@@ -1,0 +1,8 @@
+{% extends 'settings/base_settings.html' %} 
+
+{% block settings_content %}
+<form method="post" action="{% url 'article_settings' %}">
+	{% csrf_token %} {{ form.as_p }}
+	<button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock %}

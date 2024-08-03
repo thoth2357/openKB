@@ -5,7 +5,8 @@ from kb.views import (AddArticleView, ArticleDetailView, ArticleListView,
                       EditUserView, HomeView, LoginView, LogoutView,
                       MyAccountView, NewUserView, SettingsUpdateView,
                       SuggestView, UserListView, toggle_publish,
-                      validate_permalink, vote_article)
+                      validate_permalink, vote_article, ArticleSettingsView,
+                      DisplaySettingsView, StyleSettingsView, WebsiteSettingsView)
 
 # urlpatterns
 urlpatterns = [
@@ -35,6 +36,10 @@ urlpatterns = [
 
     # Admin urls
     path('settings/', SettingsUpdateView.as_view(), name='settings'),
+    path('settings/website/', WebsiteSettingsView.as_view(), name='website_settings'),
+    path('settings/article/', ArticleSettingsView.as_view(), name='article_settings'),
+    path('settings/display/', DisplaySettingsView.as_view(), name='display_settings'),
+    path('settings/style/', StyleSettingsView.as_view(), name='style_settings'),
 
     # Misc Urls
     path('validate_permalink/', validate_permalink, name='validate_permalink'),

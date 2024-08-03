@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+{% include "nav.html" %}
+<div class="container mt-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Settings</li>
+        </ol>
+    </nav>
+
+    <!-- Tabs for different settings categories -->
+    <ul class="nav nav-tabs" id="settingsTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'website' %}active{% endif %}" href="{% url 'website_settings' %}">Website</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'article' %}active{% endif %}" href="{% url 'article_settings' %}">Article</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'display' %}active{% endif %}" href="{% url 'display_settings' %}">Display</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active_tab == 'style' %}active{% endif %}" href="{% url 'style_settings' %}">Style</a>
+        </li>
+    </ul>
+
+    <!-- Content loaded based on the selected tab -->
+    <div class="tab-content" id="settingsTabContent">
+        {% block settings_content %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let tabs = document.querySelectorAll('#settingsTab a');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                let tabContentId = this.getAttribute('href').substring(1); // Assumes href is like "#website"
+                document.querySelectorAll('.tab-content .tab-pane').forEach(tp => {
+                    tp.classList.remove('active', 'show');
+                });
+                let activePane = document.getElementById(tabContentId);
+                if (activePane) {
+                    activePane.classList.add('active', 'show');
+                }
+                window.location.href = this.getAttribute('href');
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -100,3 +100,41 @@
 </div>
 {% endblock %}
 
+
+{% extends 'base.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+{% include "nav.html" %}
+<div class="container mt-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Settings</li>
+        </ol>
+    </nav>
+
+    <!-- Tabs for different settings categories -->
+    <ul class="nav nav-tabs" id="settingsTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="website-tab" href="{% url 'website_settings' %}">Website</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="article-tab" href="{% url 'article_settings' %}">Article</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="display-tab" href="{% url 'display_settings' %}">Display</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="style-tab" href="{% url 'style_settings' %}">Style</a>
+        </li>
+    </ul>
+
+    <!-- Content loaded based on the selected tab -->
+    <div class="tab-content" id="settingsTabContent">
+        {% block settings_content %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

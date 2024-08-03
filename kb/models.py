@@ -69,3 +69,33 @@ class ArticleSettings(models.Model):
 
     def __str__(self):
         return "Article Settings"
+
+
+class DisplaySettings(models.Model):
+    number_of_top_articles = models.IntegerField(default=10)
+    show_published_date = models.BooleanField(default=True)
+    show_view_count = models.BooleanField(default=True)
+    update_view_count_when_logged_in = models.BooleanField(default=False)
+    show_featured_articles = models.BooleanField(default=True)
+    show_featured_articles_when_viewing_article = models.BooleanField(default=False)
+    featured_article_count = models.IntegerField(default=4)
+    
+    def __str__(self):
+        return "Display Settings"
+
+
+from django.db import models
+
+class StyleSettings(models.Model):
+    header_background_color = models.CharField(max_length=7, blank=True)
+    header_text_color = models.CharField(max_length=7, blank=True)
+    footer_background_color = models.CharField(max_length=7, blank=True)
+    footer_text_color = models.CharField(max_length=7, blank=True)
+    button_background_color = models.CharField(max_length=7, blank=True)
+    button_text_color = models.CharField(max_length=7, blank=True)
+    link_color = models.CharField(max_length=7, blank=True)
+    page_text_color = models.CharField(max_length=7, blank=True)
+    page_font = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return "Style Settings"

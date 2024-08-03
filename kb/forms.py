@@ -4,7 +4,7 @@ from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
                                        UserCreationForm)
 from django.core.exceptions import ValidationError
 
-from kb.models import Article, ArticleSettings, Settings
+from kb.models import Article, ArticleSettings, Settings, DisplaySettings,StyleSettings
 
 
 class MDEditorForm(forms.ModelForm):
@@ -218,15 +218,15 @@ class ArticleSettingsForm(forms.ModelForm):
         model = ArticleSettings
         fields = '__all__'
         widgets = {
-            'allow_voting': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'show_article_meta': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'show_author_email': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'article_links_open_new_page': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'add_header_anchors': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'enable_editor_spellchecker': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_article_versioning': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_mermaid': forms.CheckboxInput(attrs={'class': 'form-control'}),
-            'allow_mathjax': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_voting': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'show_article_meta': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'show_author_email': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'article_links_open_new_page': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'add_header_anchors': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'enable_editor_spellchecker': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'allow_article_versioning': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'allow_mermaid': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'allow_mathjax': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
         }
         help_texts = {
             'allow_voting': 'Whether to allow users to vote on an article.',
@@ -238,4 +238,56 @@ class ArticleSettingsForm(forms.ModelForm):
             'allow_article_versioning': 'Whether to track article versions with each save of the editor.',
             'allow_mermaid': 'Whether to enable mermaid.',
             'allow_mathjax': 'Whether to enable MathJax.',
+        }
+
+
+class DisplaySettingsForm(forms.ModelForm):
+    class Meta:
+        model = DisplaySettings
+        fields = '__all__'
+        help_texts = {
+            'number_of_top_articles': 'Sets the number of results shown on the home page.',
+            'show_published_date': 'Shows the published date next to the results on the homepage and search.',
+            'show_view_count': 'Shows the view count next to the results on the homepage and search.',
+            'update_view_count_when_logged_in': 'Updates the view count also when users are logged in.',
+            'show_featured_articles': 'Whether to show any articles set to featured in a sidebar.',
+            'show_featured_articles_when_viewing_article': 'Whether to show any articles set to featured in a sidebar when viewing an article.',
+            'featured_article_count': 'The number of featured articles shown.',
+        }
+        widgets = {
+            'number_of_top_articles': forms.NumberInput(attrs={'class': 'form-control'}),
+            'show_published_date': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'show_view_count': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'update_view_count_when_logged_in': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'show_featured_articles': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'show_featured_articles_when_viewing_article': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'featured_article_count': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class StyleSettingsForm(forms.ModelForm):
+    class Meta:
+        model = StyleSettings
+        fields = '__all__'
+        widgets = {
+            'header_background_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'header_text_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'footer_background_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'footer_text_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'button_background_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'button_text_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'link_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'page_text_color': forms.TextInput(attrs={'class': 'form-control', 'type': 'color'}),
+            'page_font': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'header_background_color': 'Set the background color for the header using HEX code.',
+            'header_text_color': 'Set the text color for the header using HEX code.',
+            'footer_background_color': 'Set the background color for the footer using HEX code.',
+            'footer_text_color': 'Set the text color for the footer using HEX code.',
+            'button_background_color': 'Set the background color for buttons using HEX code.',
+            'button_text_color': 'Set the text color for buttons using HEX code.',
+            'link_color': 'Set the color for hyperlinks using HEX code.',
+            'page_text_color': 'Set the text color for the page using HEX code.',
+            'page_font': 'Set the font used on the page.',
         }

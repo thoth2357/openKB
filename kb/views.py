@@ -14,11 +14,11 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  UpdateView)
+                                  UpdateView, FormView)
 
 from kb.forms import (ArticleForm, ArticleSettingsForm, CustomUserCreationForm,
                       EditUserForm, LoginForm, MDEditorForm, MyAccountForm,
-                      WebsiteSettingsForm)
+                      WebsiteSettingsForm,DisplaySettingsForm, StyleSettingsForm)
 from kb.models import Article, ArticleSettings, Settings
 
 # Create your views here.
@@ -339,3 +339,44 @@ class ArticleSettingsView(UpdateView):
             setattr(settings, field, form.cleaned_data[field])
         settings.save()
         return super().form_valid(form)
+
+
+class WebsiteSettingsView(FormView):
+    template_name = 'settings/website_settings.html'
+    form_class = WebsiteSettingsForm
+    success_url = '/settings/website/'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active_tab'] = 'website'
+        return context
+
+class ArticleSettingsView(FormView):
+    template_name = 'settings/article_settings.html'
+    form_class = ArticleSettingsForm
+    success_url = '/settings/article/'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active_tab'] = 'article'
+        return context
+
+class DisplaySettingsView(FormView):
+    template_name = 'settings/display_settings.html'
+    form_class = DisplaySettingsForm
+    success_url = '/settings/display/'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active_tab'] = 'display'
+        return context
+
+class StyleSettingsView(FormView):
+    template_name = 'settings/style_settings.html'
+    form_class = StyleSettingsForm
+    success_url = '/settings/style/'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['active_tab'] = 'style'
+        return context

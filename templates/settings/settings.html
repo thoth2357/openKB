@@ -15,16 +15,16 @@
     <!-- Tabs for different settings categories -->
     <ul class="nav nav-tabs" id="settingsTab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="website-tab" data-toggle="tab" href="#website" role="tab" aria-controls="website" aria-selected="true">Website</a>
+            <a class="nav-link active" href="{% url 'website_settings' %}">Website</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="article-tab" data-toggle="tab" href="#article" role="tab" aria-controls="article" aria-selected="false">Article</a>
+            <a class="nav-link" href="{% url 'article_settings' %}">Article</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="display-tab" data-toggle="tab" href="#display" role="tab" aria-controls="display" aria-selected="false">Display</a>
+            <a class="nav-link" href="{% url 'display_settings' %}">Display</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="style-tab" data-toggle="tab" href="#style" role="tab" aria-controls="style" aria-selected="false">Style</a>
+            <a class="nav-link" href="{% url 'style_settings' %}">Style</a>
         </li>
     </ul>
 
