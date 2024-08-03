@@ -1,25 +1,26 @@
-from django.shortcuts import render, redirect
-from django.views import View
-from django.contrib import messages
-from django.core.exceptions import PermissionDenied
-from django.contrib.auth import login, authenticate, logout, get_user_model
-from django.contrib.messages.views import SuccessMessageMixin
-from django.http import JsonResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import CreateView, UpdateView, ListView, DeleteView, DetailView
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import get_object_or_404
-
-
-
-
-from kb.forms import MDEditorForm, LoginForm, CustomUserCreationForm, EditUserForm,MyAccountForm, ArticleForm
-from kb.models import Article, CustomUser
-
 import json
+
+from django.contrib import messages
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import PermissionDenied
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
+
+from kb.forms import (ArticleForm, ArticleSettingsForm, CustomUserCreationForm,
+                      EditUserForm, LoginForm, MDEditorForm, MyAccountForm,
+                      WebsiteSettingsForm)
+from kb.models import Article, ArticleSettings, Settings
+
 # Create your views here.
 
 def validate_permalink(request):
@@ -296,3 +297,43 @@ class ArticleDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['absolute_url'] = self.request.build_absolute_uri()
         return context
+
+
+class SettingsUpdateView(UpdateView):
+    model = Settings
+    form_class = WebsiteSettingsForm
+    template_name = 'admin/settings.html'
+    success_url = reverse_lazy('settings')  # Redirect after POST
+
+    def get_object(self, queryset=None):
+        # This ensures we always work with a single settings instance.
+        return Settings.objects.first() or Settings()
+
+    def form_valid(self, form):
+        # You can add any logic after the form is saved here.
+        response = super().form_valid(form)
+        # Example: Set a success message
+        messages.success(self.request, "Settings updated successfully.")
+        return response
+
+
+class ArticleSettingsView(UpdateView):
+    template_name = 'admin/settings.html'
+    form_class = ArticleSettingsForm
+    success_url = reverse_lazy('settings')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        settings_instance = ArticleSettings.objects.first()  # Ensure you handle case where no settings exist yet
+        context['article_form'] = self.form_class(instance=settings_instance) if settings_instance else self.form_class()
+        return context
+
+    def form_valid(self, form):
+        # Assuming there's only one settings object, or creating a new one if none exist
+        settings = ArticleSettings.objects.first()
+        if not settings:
+            settings = ArticleSettings()
+        for field in form.cleaned_data:
+            setattr(settings, field, form.cleaned_data[field])
+        settings.save()
+        return super().form_valid(form)

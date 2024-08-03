@@ -13,6 +13,11 @@ django-mdeditor = "^0.1.20"
 mistune = "^3.0.2"
 
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.5.6"
+isort = "^5.13.2"
+black = "^24.8.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

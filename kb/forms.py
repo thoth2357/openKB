@@ -1,12 +1,11 @@
 from django import forms
-from django.core.exceptions import ValidationError
-from mdeditor.fields import MDTextFormField
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
+                                       UserCreationForm)
 from django.core.exceptions import ValidationError
 
+from kb.models import Article, ArticleSettings, Settings
 
-from kb.models import Article
 
 class MDEditorForm(forms.ModelForm):
     class Meta:
@@ -174,3 +173,69 @@ class ArticleForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+    
+
+class WebsiteSettingsForm(forms.ModelForm):
+    class Meta:
+        model = Settings
+        fields = '__all__'
+        widgets = {
+            'website_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'website_description': forms.Textarea(attrs={'class': 'form-control'}),
+            'show_logo': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'base_url': forms.TextInput(attrs={'class': 'form-control'}),
+            'allow_api': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'api_token': forms.TextInput(attrs={'class': 'form-control'}),
+            'password_protect': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'index_article_body': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'select_theme': forms.Select(choices=[("darkly", 'Darkly'), (None, 'Default')], attrs={'class': 'form-control'}),
+            'select_language': forms.Select(choices=[("en", "English"), ("fr", "French")], attrs={'class': 'form-control'}),
+            'show_logon_link': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'date_format': forms.TextInput(attrs={'class': 'form-control'}),
+            'article_suggestions_allowed': forms.Select(choices=[(True, 'True'), (False, 'False')], attrs={'class': 'form-control'}),
+            'google_analytics_code': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'website_title': 'The title of your website.',
+            'website_description': 'A short description that appears in search engine results.',
+            'show_logo': 'Toggle to show or hide the website logo.',
+            'base_url': 'The root URL where your site is hosted. Eg: http://example.com/',
+            'allow_api': 'Allow external systems to access site data via API.',
+            'api_token': 'The security token others will use to access your API.',
+            'password_protect': 'Require users to log in before accessing the site.',
+            'index_article_body': 'Include the text of articles in the search index.',
+            'select_theme': 'The visual theme for the site. Leave blank for default styling.',
+            'select_language': 'The language the site interface will appear in.',
+            'show_logon_link': 'Display a link for users to log on if needed.',
+            'date_format': 'Format in which dates are displayed on the site.',
+            'article_suggestions_allowed': 'Allow users to submit articles for potential inclusion.',
+            'google_analytics_code': 'Google Analytics code to track site usage.',
+        }
+
+
+class ArticleSettingsForm(forms.ModelForm):
+    class Meta:
+        model = ArticleSettings
+        fields = '__all__'
+        widgets = {
+            'allow_voting': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'show_article_meta': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'show_author_email': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'article_links_open_new_page': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'add_header_anchors': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'enable_editor_spellchecker': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_article_versioning': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_mermaid': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'allow_mathjax': forms.CheckboxInput(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'allow_voting': 'Whether to allow users to vote on an article.',
+            'show_article_meta': 'Whether to show article meta data including published date, last updated date, author etc.',
+            'show_author_email': 'Controls whether the authors email address is displayed in the meta. Requires "Show article meta data".',
+            'article_links_open_new_page': 'Controls whether links within articles open a new page (tab).',
+            'add_header_anchors': 'Whether to add HTML anchors to all heading tags for linking within articles or direct linking from other pages.',
+            'enable_editor_spellchecker': 'Controls whether to enable the editor spellchecker.',
+            'allow_article_versioning': 'Whether to track article versions with each save of the editor.',
+            'allow_mermaid': 'Whether to enable mermaid.',
+            'allow_mathjax': 'Whether to enable MathJax.',
+        }

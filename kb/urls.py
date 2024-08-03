@@ -1,6 +1,11 @@
-from django.urls import path, re_path
-from kb.views import HomeView, SuggestView,LoginView,LogoutView, NewUserView, EditUserView, MyAccountView, UserListView, DeleteUserView, AddArticleView, validate_permalink, ArticleListView,EditArticleView,DeleteArticleView, toggle_publish, ArticleDetailView, vote_article
+from django.urls import path
 
+from kb.views import (AddArticleView, ArticleDetailView, ArticleListView,
+                      DeleteArticleView, DeleteUserView, EditArticleView,
+                      EditUserView, HomeView, LoginView, LogoutView,
+                      MyAccountView, NewUserView, SettingsUpdateView,
+                      SuggestView, UserListView, toggle_publish,
+                      validate_permalink, vote_article)
 
 # urlpatterns
 urlpatterns = [
@@ -28,8 +33,9 @@ urlpatterns = [
     path('articles/<int:pk>/', ArticleDetailView.as_view(), name='article_detail_by_pk'),
     path('articles/<slug:slug>/', ArticleDetailView.as_view(), name='article_detail'),
 
-    
-    
+    # Admin urls
+    path('settings/', SettingsUpdateView.as_view(), name='settings'),
+
     # Misc Urls
     path('validate_permalink/', validate_permalink, name='validate_permalink'),
     path('article/<int:pk>/vote/', vote_article, name='article_vote'),

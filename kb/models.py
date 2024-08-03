@@ -1,7 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
+from django.contrib.auth.models import AbstractUser
 from mdeditor.fields import MDTextField
+
 
 # Create your models here.
 class Article(models.Model):
@@ -33,3 +34,38 @@ class CustomUser(AbstractUser):
     
     def __str__(self):
         return self.email
+    
+
+class Settings(models.Model):
+    website_title = models.CharField(max_length=255, blank=True, default='openKB')
+    website_description = models.TextField(blank=True, default='openKB is an Open Source Node.js Markdown based knowledge base/FAQ/Wiki app.')
+    show_website_logo = models.BooleanField(default=True)
+    website_context_base_url = models.URLField(blank=True, default='http://127.0.0.1:4444/openkb/')
+    allow_api_access = models.BooleanField(default=False)
+    api_access_token = models.CharField(max_length=255, blank=True)
+    password_protect = models.BooleanField(default=False)
+    index_article_body = models.BooleanField(default=False)
+    select_theme = models.CharField(max_length=255, blank=True)
+    select_language = models.CharField(max_length=10, default='en', choices=[('en', 'English')])
+    show_logon_link = models.BooleanField(default=True)
+    date_format = models.CharField(max_length=50, default='DD/MM/YYYY h:mmA')
+    article_suggestions_allowed = models.BooleanField(default=True)
+    google_analytics_code = models.TextField(blank=True)
+
+    def __str__(self):
+        return "Site Settings"
+
+
+class ArticleSettings(models.Model):
+    allow_voting = models.BooleanField(default=True, verbose_name='Allow voting')
+    show_article_meta = models.BooleanField(default=True, verbose_name='Show article meta data')
+    show_author_email = models.BooleanField(default=True, verbose_name='Show author email')
+    article_links_open_new_page = models.BooleanField(default=True, verbose_name='Article links open new page')
+    add_header_anchors = models.BooleanField(default=False, verbose_name='Add header anchors')
+    enable_editor_spellchecker = models.BooleanField(default=True, verbose_name='Enable editor spellchecker')
+    allow_article_versioning = models.BooleanField(default=False, verbose_name='Allow article versioning')
+    allow_mermaid = models.BooleanField(default=False, verbose_name='Allow Mermaid')
+    allow_mathjax = models.BooleanField(default=False, verbose_name='Allow MathJax')
+
+    def __str__(self):
+        return "Article Settings"
