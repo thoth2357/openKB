@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="{% static 'assets/css/styles.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* Apply styles from StyleSettings if available */
         body {
             font-family: '{{ style_settings.page_font }}', sans-serif;
             color: {{ style_settings.page_text_color }};
@@ -39,6 +38,15 @@
         }
         a {
             color: {{ style_settings.link_color }};
+        }
+
+        .navbar-toggler {
+            border: none;
+            border-color: {{ style_settings.header_text_color }}; /* Set the border color of the toggler */
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='{{ style_settings.header_text_color|urlencode }}' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
         }
     </style>
     {% block styles %}
