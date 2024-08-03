@@ -56,7 +56,7 @@
                                                 <strong>View count:</strong> {{article.view_count}} /
                                             {% endif %}
                                             {% if display_settings.show_published_date %}
-                                                <strong>Date:</strong> {{article.created|date:settings.date_format}}
+                                                <strong>Date:</strong> {{article.created|date:websettings.date_format}}
                                             {% endif %}
                                         </td>
                                     </tr>

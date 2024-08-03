@@ -8,6 +8,6 @@ def website_settings(request):
 
     # Return a dictionary of the settings to be added to the template context
     return {
-        'settings': website_settings,
+        'websettings': website_settings,
         'style_settings': style_settings,
     }

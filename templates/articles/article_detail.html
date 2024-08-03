@@ -26,7 +26,7 @@
 
     {% if settings.allow_voting %}
     <div class="row justify-content-end mt-3">
-        <div class="col-md-4 text-right">
+        <div class="col-md-6 text-right">
             <p>Was this article helpful?
                 <button onclick="incrementVote({{ article.id }}, true)">👍</button>
                 <button onclick="incrementVote({{ article.id }}, false)">👎</button>
@@ -46,13 +46,13 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Published date:</strong> {{ article.created|date:settings.date_format }}</p>
+                            <p><strong>Published date:</strong> {{ article.created|date:websettings.date_format }}</p>
                             {% if settings.show_author_email %}
                                 <p><strong>Author Email:</strong> {{ article.author.email }}</p>
                             {% endif %}
                         </div>
                         <div class="col-md-6">
-                            <p><strong>Last updated:</strong> {{ article.updated|date:settings.date_format }}</p>
+                            <p><strong>Last updated:</strong> {{ article.updated|date:websettings.date_format }}</p>
                             {% if article.permalink %}
                                 <p><strong>Permalink:</strong> <a href="{{ absolute_url }}" {% if settings.article_links_open_new_page %}target="_blank"{% endif %}>{{ article.permalink }}</a></p>
                             {% endif %}

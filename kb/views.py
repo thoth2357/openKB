@@ -313,34 +313,6 @@ class ArticleDetailView(DetailView):
         return context
 
 
-# class SettingsUpdateView(UpdateView):
-#     model = WebsiteSettings
-#     form_class = WebsiteSettingsForm
-#     template_name = 'admin/settings.html'
-#     success_url = reverse_lazy('settings')  # Redirect after POST
-
-#     def get_object(self, queryset=None):
-#         # This ensures we always work with a single settings instance.
-#         return WebsiteSettings.objects.first() or WebsiteSettings()
-
-#     def form_valid(self, form):
-#         # You can add any logic after the form is saved here.
-#         response = super().form_valid(form)
-#         # Example: Set a success message
-#         messages.success(self.request, "WebsiteSettings updated successfully.")
-#         return response
-
-#     def form_valid(self, form):
-#         # Assuming there's only one settings object, or creating a new one if none exist
-#         print("form", form)
-#         settings = WebsiteSettings.objects.first()
-#         if not settings:
-#             settings = WebsiteSettings()
-#         for field in form.cleaned_data:
-#             setattr(settings, field, form.cleaned_data[field])
-#         settings.save()
-#         return super().form_valid(form)
-
 class ArticleSettingsView(UpdateView):
     model = ArticleSettings
     template_name = 'settings/article_settings.html'
