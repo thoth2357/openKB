@@ -1,12 +1,12 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg fixed-top ">
     <div class="container">
-        {% if websettingsshow_website_logo %}
+        {% if websettings.show_website_logo %}
             <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'assets/img/logo.png' %}" alt="{{ websettingswebsite_title }}" height="40">
+                <img src="{% static 'assets/img/logo.png' %}" alt="{{ websettings.website_title }}" height="40">
             </a>
         {% else %}
-            <a class="navbar-brand" href="{% url 'home' %}">{{ websettingswebsite_title }}</a>
+            <a class="navbar-brand" href="{% url 'home' %}">{{ websettings.website_title }}</a>
         {% endif %}
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -63,7 +63,7 @@
                 </li>
                 {% else %}
                 <!-- Display these items if the user is not logged in -->
-                {% if websettingsarticle_suggestions_allowed %}
+                {% if websettings.article_suggestions_allowed %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "suggest" %}"><i class="fas fa-lightbulb"></i> Suggest</a>
                     </li>

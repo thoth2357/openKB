@@ -7,8 +7,8 @@
 
 		{% block misc-head-options %} {% endblock misc-head-options %}
 
-		<title>{{ websettingswebsite_title }} - {% block title %}{% endblock title %}</title>
-		<meta name="description" content="{{ websettingswebsite_description }}" />
+		<title>{{ websettings.website_title }} - {% block title %}{% endblock title %}</title>
+		<meta name="description" content="{{ websettings.website_description }}" />
 		<meta name="keywords" content="knowledge base, articles, wiki, FAQ" />
 
 		<link
@@ -63,18 +63,18 @@
 		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-		{% if websettingsgoogle_analytics_code %}
+		{% if websettings.google_analytics_code %}
 		<!-- Google Analytics -->
 		<script
 			async
-			src="https://www.googletagmanager.com/gtag/js?id={{ websettingsgoogle_analytics_code }}"></script>
+			src="https://www.googletagmanager.com/gtag/js?id={{ websettings.google_analytics_code }}"></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
 			function gtag() {
 				dataLayer.push(arguments);
 			}
 			gtag("js", new Date());
-			gtag("config", "{{ websettingsgoogle_analytics_code }}");
+			gtag("config", "{{ websettings.google_analytics_code }}");
 		</script>
 		{% endif %} {% endblock scripts %}
 	</body>
