@@ -298,6 +298,10 @@ class ArticleDetailView(DetailView):
         context['absolute_url'] = self.request.build_absolute_uri()
         context['is_article_detail'] = True  # Add this line
 
+        # Add article settings to context
+        settings = ArticleSettings.objects.first()  # Assuming only one settings object exists
+        context['settings'] = settings
+        
         return context
 
 
@@ -320,14 +324,21 @@ class SettingsUpdateView(UpdateView):
 
 
 class ArticleSettingsView(UpdateView):
-    template_name = 'admin/settings.html'
+    model = ArticleSettings
+    template_name = 'settings/article_settings.html'
     form_class = ArticleSettingsForm
-    success_url = reverse_lazy('settings')
+    success_url = '/settings/article/'
+   
+    
+    def get_object(self, queryset=None):
+        # This ensures we always work with a single settings instance.
+        return ArticleSettings.objects.first() or ArticleSettings()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         settings_instance = ArticleSettings.objects.first()  # Ensure you handle case where no settings exist yet
-        context['article_form'] = self.form_class(instance=settings_instance) if settings_instance else self.form_class()
+        context['active_tab'] = 'article'
+
         return context
 
     def form_valid(self, form):
@@ -351,15 +362,21 @@ class WebsiteSettingsView(FormView):
         context['active_tab'] = 'website'
         return context
 
-class ArticleSettingsView(FormView):
-    template_name = 'settings/article_settings.html'
-    form_class = ArticleSettingsForm
-    success_url = '/settings/article/'
+# class ArticleSettingsView(UpdateView):
+#     template_name = 'settings/article_settings.html'
+#     form_class = ArticleSettingsForm
+#     success_url = '/settings/article/'
     
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['active_tab'] = 'article'
-        return context
+#     def form_valid(self, form):
+#         print("form", form.cleaned_data)
+    
+#     def form_invalid(self, form):
+#         print("form", form.errors)
+        
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['active_tab'] = 'article'
+#         return context
 
 class DisplaySettingsView(FormView):
     template_name = 'settings/display_settings.html'

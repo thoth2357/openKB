@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load markdownify %}
+
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block content %}
@@ -23,7 +24,8 @@
         </div>
     </div>
 
-    <div class="row justify-content-end">
+    {% if settings.allow_voting %}
+    <div class="row justify-content-end mt-3">
         <div class="col-md-4 text-right">
             <p>Was this article helpful?
                 <button onclick="incrementVote({{ article.id }}, true)">👍</button>
@@ -32,7 +34,9 @@
             </p>
         </div>
     </div>
+    {% endif %}
 
+    {% if settings.show_article_meta %}
     <div class="row mt-4">
         <div class="col-md-12">
             <div class="card">
@@ -43,25 +47,30 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>Published date:</strong> {{ article.created|date:"d/m/Y H:iA" }}</p>
-                            <p><strong>Author:</strong> {{ article.author }}</p>
+                            {% if settings.show_author_email %}
+                                <p><strong>Author Email:</strong> {{ article.author.email }}</p>
+                            {% endif %}
                         </div>
                         <div class="col-md-6">
                             <p><strong>Last updated:</strong> {{ article.updated|date:"d/m/Y H:iA" }}</p>
                             {% if article.permalink %}
-                                <p><strong>Permalink:</strong> <a href="{{ absolute_uri }}">{{ article.permalink }}</a></p>
+                                <p><strong>Permalink:</strong> <a href="{{ absolute_url }}" {% if settings.article_links_open_new_page %}target="_blank"{% endif %}>{{ article.permalink }}</a></p>
                             {% endif %}
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-12 text-right">
-                            <!-- Email sharing link -->
-                            <a href="mailto:?subject={{ article.title|urlencode }}&body=Check out this article: {{ request.build_absolute_uri }}" class="btn btn-info">
-                                <i class="fas fa-envelope"></i> Share via Email
-                            </a>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="row mt-4">
+        <div class="col-md-12 text-right">
+            <!-- Email sharing link -->
+            <a href="mailto:?subject={{ article.title|urlencode }}&body=Check out this article: {{ request.build_absolute_uri }}" class="btn btn-info">
+                <i class="fas fa-envelope"></i> Share via Email
+            </a>
+            <a href="{% url 'edit_article' article.id %}" class="btn btn-primary">Edit Article</a>
         </div>
     </div>
 </div>
