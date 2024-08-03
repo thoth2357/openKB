@@ -22,7 +22,7 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 from kb.forms import (ArticleForm, ArticleSettingsForm, CustomUserCreationForm,
                       EditUserForm, LoginForm, MDEditorForm, MyAccountForm,
                       WebsiteSettingsForm,DisplaySettingsForm, StyleSettingsForm)
-from kb.models import Article, ArticleSettings, Settings, DisplaySettings
+from kb.models import Article, ArticleSettings, WebsiteSettings, DisplaySettings, StyleSettings
 
 # Create your views here.
 
@@ -313,23 +313,33 @@ class ArticleDetailView(DetailView):
         return context
 
 
-class SettingsUpdateView(UpdateView):
-    model = Settings
-    form_class = WebsiteSettingsForm
-    template_name = 'admin/settings.html'
-    success_url = reverse_lazy('settings')  # Redirect after POST
+# class SettingsUpdateView(UpdateView):
+#     model = WebsiteSettings
+#     form_class = WebsiteSettingsForm
+#     template_name = 'admin/settings.html'
+#     success_url = reverse_lazy('settings')  # Redirect after POST
 
-    def get_object(self, queryset=None):
-        # This ensures we always work with a single settings instance.
-        return Settings.objects.first() or Settings()
+#     def get_object(self, queryset=None):
+#         # This ensures we always work with a single settings instance.
+#         return WebsiteSettings.objects.first() or WebsiteSettings()
 
-    def form_valid(self, form):
-        # You can add any logic after the form is saved here.
-        response = super().form_valid(form)
-        # Example: Set a success message
-        messages.success(self.request, "Settings updated successfully.")
-        return response
+#     def form_valid(self, form):
+#         # You can add any logic after the form is saved here.
+#         response = super().form_valid(form)
+#         # Example: Set a success message
+#         messages.success(self.request, "WebsiteSettings updated successfully.")
+#         return response
 
+#     def form_valid(self, form):
+#         # Assuming there's only one settings object, or creating a new one if none exist
+#         print("form", form)
+#         settings = WebsiteSettings.objects.first()
+#         if not settings:
+#             settings = WebsiteSettings()
+#         for field in form.cleaned_data:
+#             setattr(settings, field, form.cleaned_data[field])
+#         settings.save()
+#         return super().form_valid(form)
 
 class ArticleSettingsView(UpdateView):
     model = ArticleSettings
@@ -360,10 +370,15 @@ class ArticleSettingsView(UpdateView):
         return super().form_valid(form)
 
 
-class WebsiteSettingsView(FormView):
+class WebsiteSettingsView(UpdateView):
+    model = WebsiteSettings
     template_name = 'settings/website_settings.html'
     form_class = WebsiteSettingsForm
     success_url = '/settings/website/'
+    
+    def get_object(self, queryset=None):
+        return WebsiteSettings.objects.first() or WebsiteSettings()
+    
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -388,10 +403,14 @@ class DisplaySettingsView(UpdateView):
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         return super().form_valid(form)
 
-class StyleSettingsView(FormView):
+class StyleSettingsView(UpdateView):
+    model = StyleSettings
     template_name = 'settings/style_settings.html'
     form_class = StyleSettingsForm
     success_url = '/settings/style/'
+    
+    def get_object(self, queryset=None):
+        return StyleSettings.objects.first() or StyleSettings()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

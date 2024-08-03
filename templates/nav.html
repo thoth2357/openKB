@@ -1,6 +1,13 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+{% load static %}
+<nav class="navbar navbar-expand-lg fixed-top ">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-home"></i> openKB</a>
+        {% if settings.show_website_logo %}
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'assets/img/logo.png' %}" alt="{{ settings.website_title }}" height="40">
+            </a>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'home' %}">{{ settings.website_title }}</a>
+        {% endif %}
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -56,9 +63,11 @@
                 </li>
                 {% else %}
                 <!-- Display these items if the user is not logged in -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url "suggest" %}"><i class="fas fa-lightbulb"></i> Suggest</a>
-                </li>
+                {% if settings.article_suggestions_allowed %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "suggest" %}"><i class="fas fa-lightbulb"></i> Suggest</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
                 </li>

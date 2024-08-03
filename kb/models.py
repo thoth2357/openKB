@@ -36,7 +36,7 @@ class CustomUser(AbstractUser):
         return self.email
     
 
-class Settings(models.Model):
+class WebsiteSettings(models.Model):
     website_title = models.CharField(max_length=255, blank=True, default='openKB')
     website_description = models.TextField(blank=True, default='openKB is an Open Source Node.js Markdown based knowledge base/FAQ/Wiki app.')
     show_website_logo = models.BooleanField(default=True)
@@ -48,7 +48,7 @@ class Settings(models.Model):
     select_theme = models.CharField(max_length=255, blank=True)
     select_language = models.CharField(max_length=10, default='en', choices=[('en', 'English')])
     show_logon_link = models.BooleanField(default=True)
-    date_format = models.CharField(max_length=50, default='DD/MM/YYYY h:mmA')
+    date_format = models.CharField(max_length=50, default='d/m/Y H:iA')
     article_suggestions_allowed = models.BooleanField(default=True)
     google_analytics_code = models.TextField(blank=True)
 
@@ -86,14 +86,14 @@ class DisplaySettings(models.Model):
 
 
 class StyleSettings(models.Model):
-    header_background_color = models.CharField(max_length=7, blank=True)
-    header_text_color = models.CharField(max_length=7, blank=True)
-    footer_background_color = models.CharField(max_length=7, blank=True)
-    footer_text_color = models.CharField(max_length=7, blank=True)
-    button_background_color = models.CharField(max_length=7, blank=True)
-    button_text_color = models.CharField(max_length=7, blank=True)
-    link_color = models.CharField(max_length=7, blank=True)
-    page_text_color = models.CharField(max_length=7, blank=True)
+    header_background_color = models.CharField(max_length=7, blank=True, default='#343a40')
+    header_text_color = models.CharField(max_length=7, blank=True, default='#ffffff')
+    footer_background_color = models.CharField(max_length=7, blank=True, default='#343a40')
+    footer_text_color = models.CharField(max_length=7, blank=True, default='#ffffff')
+    button_background_color = models.CharField(max_length=7, blank=True, default='#007bff')
+    button_text_color = models.CharField(max_length=7, blank=True, default='#ffffff')
+    link_color = models.CharField(max_length=7, blank=True, default='#007bff')
+    page_text_color = models.CharField(max_length=7, blank=True, default='#212529')
     page_font = models.CharField(max_length=50, blank=True)
 
     def __str__(self):

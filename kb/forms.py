@@ -4,7 +4,7 @@ from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
                                        UserCreationForm)
 from django.core.exceptions import ValidationError
 
-from kb.models import Article, ArticleSettings, Settings, DisplaySettings,StyleSettings
+from kb.models import Article, ArticleSettings, WebsiteSettings, DisplaySettings,StyleSettings
 
 
 class MDEditorForm(forms.ModelForm):
@@ -177,7 +177,7 @@ class ArticleForm(forms.ModelForm):
 
 class WebsiteSettingsForm(forms.ModelForm):
     class Meta:
-        model = Settings
+        model = WebsiteSettings
         fields = '__all__'
         widgets = {
             'website_title': forms.TextInput(attrs={'class': 'form-control'}),

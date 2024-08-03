@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.shortcuts import redirect
 from django.urls import reverse
-from kb.models import Article, CustomUser, Settings, ArticleSettings, DisplaySettings, StyleSettings
+from kb.models import Article, CustomUser, WebsiteSettings, ArticleSettings, DisplaySettings, StyleSettings
 
 # Register your models here.
 
@@ -30,7 +30,7 @@ class SingletonAdmin(admin.ModelAdmin):
 
 admin.site.register(Article)
 admin.site.register(CustomUser, UserAdmin)
-admin.site.register(Settings, SingletonAdmin)
+admin.site.register(WebsiteSettings, SingletonAdmin)
 admin.site.register(ArticleSettings, SingletonAdmin)
 admin.site.register(DisplaySettings, SingletonAdmin)
 admin.site.register(StyleSettings, SingletonAdmin)
