@@ -296,6 +296,8 @@ class ArticleDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['absolute_url'] = self.request.build_absolute_uri()
+        context['is_article_detail'] = True  # Add this line
+
         return context
 
 

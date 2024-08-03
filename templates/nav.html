@@ -7,6 +7,10 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 {% if user.is_authenticated %}
+                    {% if is_article_detail %}
+                        <!-- Only show this if on an article detail page -->
+                        <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url 'edit_article' article.pk %}"><i class="fas fa-edit"></i> Edit</a>
+                    {% endif %}
                 <!-- Display these items if the user is logged in -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="usersDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
