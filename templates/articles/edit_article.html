@@ -51,8 +51,8 @@
             <button type="button" class="btn btn-secondary" onclick="toggleSettings()">Settings</button>
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-    </form>
-    <div id="settingsPanel" style="display:none;" class="settings-panel">
+
+        <div id="settingsPanel" style="display:none;" class="settings-panel">
         <!-- Settings form fields can go here, similar to the settings shown in the second image -->
         <h4>Settings</h4>
         <div class="form-group">
@@ -63,7 +63,15 @@
             <label for="seo_description">SEO Description</label>
             <textarea id="seo_description" name="seo_description" class="form-control"></textarea>
         </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="id_status">Featured</label>
+                {{ form.featured }}
+            </div>
+        </div>
     </div>
+    </form>
+    
 </div>
 {% endblock %}
 

@@ -18,7 +18,7 @@ class Article(models.Model):
     seo_title = models.CharField(max_length=255, default='')
     seo_description = models.TextField(default='')
     author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
-    
+    featured = models.BooleanField(default=False)
     def __str__(self):
         return self.title
     

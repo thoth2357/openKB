@@ -124,7 +124,7 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ['title', 'content', 'keywords', 'permalink', 'status', 'seo_title', 'seo_description']
+        fields = ['title', 'content', 'keywords', 'permalink', 'status', 'seo_title', 'seo_description', 'featured']
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)

@@ -68,7 +68,8 @@ class HomeView(View):
     """
     def get(self, request):
         context = {
-            "published_articles":Article.objects.filter(published=True)
+            "published_articles":Article.objects.filter(published=True),
+            "featured_articles": Article.objects.filter(featured=True)
         }
         return render(request, "index.html", context)
 

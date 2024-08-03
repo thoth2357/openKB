@@ -25,9 +25,9 @@
                         <table class="table m-0">
                             <tbody>
                                 {% for article in  featured_articles%}
-                                    <tr class="py-3">
-                                        <td class="py-3"><a href="#">Article 1</a></td>
-                                    </tr>
+                                    <td class="py-3">
+                                        <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
+                                    </td>
                                 {% endfor %}                                
                             </tbody>
                         </table>
