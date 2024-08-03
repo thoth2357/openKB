@@ -75,7 +75,7 @@ class DisplaySettings(models.Model):
     number_of_top_articles = models.IntegerField(default=10)
     show_published_date = models.BooleanField(default=True)
     show_view_count = models.BooleanField(default=True)
-    update_view_count_when_logged_in = models.BooleanField(default=False)
+    update_view_count_when_logged_in = models.BooleanField(default=True)
     show_featured_articles = models.BooleanField(default=True)
     show_featured_articles_when_viewing_article = models.BooleanField(default=False)
     featured_article_count = models.IntegerField(default=4)
@@ -84,7 +84,6 @@ class DisplaySettings(models.Model):
         return "Display Settings"
 
 
-from django.db import models
 
 class StyleSettings(models.Model):
     header_background_color = models.CharField(max_length=7, blank=True)

@@ -7,7 +7,10 @@ from django.contrib.auth.mixins import (LoginRequiredMixin,
                                         PermissionRequiredMixin)
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, JsonResponse
+from django.db.models.base import Model as Model
+from django.db.models.query import QuerySet
+from django.forms import BaseModelForm
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views import View
@@ -19,7 +22,7 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 from kb.forms import (ArticleForm, ArticleSettingsForm, CustomUserCreationForm,
                       EditUserForm, LoginForm, MDEditorForm, MyAccountForm,
                       WebsiteSettingsForm,DisplaySettingsForm, StyleSettingsForm)
-from kb.models import Article, ArticleSettings, Settings
+from kb.models import Article, ArticleSettings, Settings, DisplaySettings
 
 # Create your views here.
 
@@ -68,8 +71,12 @@ class HomeView(View):
     """
     def get(self, request):
         context = {
-            "published_articles":Article.objects.filter(published=True),
-            "featured_articles": Article.objects.filter(featured=True)
+            # limit publish articles
+            "published_articles":Article.objects.filter(published=True)[:DisplaySettings.objects.first().number_of_top_articles],
+            "featured_articles": Article.objects.filter(featured=True)[:DisplaySettings.objects.first().featured_article_count],
+            'display_settings': DisplaySettings.objects.first()
+,
+
         }
         return render(request, "index.html", context)
 
@@ -363,31 +370,23 @@ class WebsiteSettingsView(FormView):
         context['active_tab'] = 'website'
         return context
 
-# class ArticleSettingsView(UpdateView):
-#     template_name = 'settings/article_settings.html'
-#     form_class = ArticleSettingsForm
-#     success_url = '/settings/article/'
-    
-#     def form_valid(self, form):
-#         print("form", form.cleaned_data)
-    
-#     def form_invalid(self, form):
-#         print("form", form.errors)
-        
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['active_tab'] = 'article'
-#         return context
 
-class DisplaySettingsView(FormView):
+class DisplaySettingsView(UpdateView):
+    model = DisplaySettings
     template_name = 'settings/display_settings.html'
     form_class = DisplaySettingsForm
     success_url = '/settings/display/'
+    
+    def get_object(self, queryset=None):
+        return DisplaySettings.objects.first() or DisplaySettings()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active_tab'] = 'display'
         return context
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        return super().form_valid(form)
 
 class StyleSettingsView(FormView):
     template_name = 'settings/style_settings.html'

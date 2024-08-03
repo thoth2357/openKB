@@ -16,6 +16,7 @@
             </div>
         </div>
         <div class="row">
+            {% if display_settings.show_featured_articles %}
             <div class="col-md-2">
                 <div class="card">
                     <div class="card-header bg-light border-bottom pb-2">
@@ -24,16 +25,19 @@
                     <div class="card-body p-0">
                         <table class="table m-0">
                             <tbody>
-                                {% for article in  featured_articles%}
-                                    <td class="py-3">
-                                        <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
-                                    </td>
-                                {% endfor %}                                
+                                {% for article in featured_articles|slice:":display_settings.featured_article_count" %}
+                                    <tr>
+                                        <td class="py-3">
+                                            <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            {% endif %}
             <div class="col-md-10">
                 <div class="card">
                     <div class="card-header bg-light border-bottom pb-2">
@@ -42,19 +46,21 @@
                     <div class="card-body p-0">
                         <table class="table m-0">
                             <tbody>
-                                {% for article in published_articles %}
+                                {% for article in published_articles|slice:":display_settings.number_of_top_articles" %}
                                     <tr class="py-3">
-                                    <td class="py-3">
-                                        <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
-                                    </td>
-                                    
-
-                                    <td class="text-right py-3">
-                                        <strong>View count:</strong> {{article.view_count}} / 
-                                        <strong>Date:</strong> {{article.created|date:"d/m/Y H:iA"}}
-                                    </td>
-                                </tr>
-                                {% endfor %}                                
+                                        <td class="py-3">
+                                            <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
+                                        </td>
+                                        <td class="text-right py-3">
+                                            {% if display_settings.show_view_count %}
+                                                <strong>View count:</strong> {{article.view_count}} /
+                                            {% endif %}
+                                            {% if display_settings.show_published_date %}
+                                                <strong>Date:</strong> {{article.created|date:"d/m/Y H:iA"}}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -67,4 +73,3 @@
     {% include "footer.html" %}
     {% include "messages.html" %}
 {% endblock misc %}
-
