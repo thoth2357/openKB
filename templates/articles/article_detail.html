@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load markdownify %}
 {% block title %}{{ article.title }}{% endblock %}
 
 {% block content %}
@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-md-8">
             <h1>{{ article.title }}</h1>
-            <p>{{ article.content | safe }}</p>
+            <p>{{ article.content | markdownify }}</p>
         </div>
     </div>
 

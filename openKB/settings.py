@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     
     # Third Party Apps
     "mdeditor",
+    "markdownify",
     
     # Django APPs
     "kb.apps.KbConfig",
