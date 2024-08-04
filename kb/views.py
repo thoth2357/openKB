@@ -1,4 +1,5 @@
 import json
+import os
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -18,13 +19,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView, FormView)
+from django.conf import settings
 
 from kb.forms import (ArticleForm, ArticleSettingsForm, CustomUserCreationForm,
                       EditUserForm, LoginForm, MDEditorForm, MyAccountForm,
-                      WebsiteSettingsForm,DisplaySettingsForm, StyleSettingsForm)
+                      WebsiteSettingsForm,DisplaySettingsForm, StyleSettingsForm,
+                      FileUploadForm,DirectoryForm)
 from kb.models import Article, ArticleSettings, WebsiteSettings, DisplaySettings, StyleSettings
 
 # Create your views here.
+BASE_UPLOAD_PATH = os.path.join(settings.MEDIA_ROOT, 'uploads')
 
 def validate_permalink(request):
     permalink = request.GET.get('permalink', None)
@@ -388,3 +392,47 @@ class StyleSettingsView(UpdateView):
         context = super().get_context_data(**kwargs)
         context['active_tab'] = 'style'
         return context
+
+
+class FileManagementView(View):
+    template_name = 'file.html'
+
+    def get(self, request):
+        file_form = FileUploadForm()
+        directory_form = DirectoryForm()
+        return render(request, self.template_name, {
+            'file_form': file_form,
+            'directory_form': directory_form,
+        })
+
+    def post(self, request):
+        file_form = FileUploadForm(request.POST, request.FILES)
+        directory_form = DirectoryForm(request.POST)
+
+        if 'action' in request.POST:
+            if request.POST['action'] == 'upload_file' and file_form.is_valid():
+                # Handle file upload
+                upload_directory = file_form.cleaned_data['upload_directory'].lstrip('/')
+                uploaded_file = request.FILES['file']
+                full_upload_path = os.path.join(BASE_UPLOAD_PATH, upload_directory)
+                print(full_upload_path, 'full_upload_path', BASE_UPLOAD_PATH)
+
+                # Save the file to the selected directory
+                with open(os.path.join(full_upload_path, uploaded_file.name), 'wb+') as destination:
+                    for chunk in uploaded_file.chunks():
+                        destination.write(chunk)
+                messages.success(request, f'File "{uploaded_file.name}" uploaded successfully.')
+                return redirect('file_management')  # Redirect to the same page after upload
+
+            elif request.POST['action'] == 'create_directory' and directory_form.is_valid():
+                # Handle directory creation
+                new_directory = directory_form.cleaned_data['new_directory']
+                os.makedirs(os.path.join(BASE_UPLOAD_PATH, new_directory), exist_ok=True)
+                messages.success(request, f'Directory "{new_directory}" created successfully.')
+                
+                return redirect('file_management')  # Redirect to the same page after creation
+
+        return render(request, self.template_name, {
+            'file_form': file_form,
+            'directory_form': directory_form,
+        })

@@ -1,11 +1,14 @@
+import os
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
                                        UserCreationForm)
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from kb.models import Article, ArticleSettings, WebsiteSettings, DisplaySettings,StyleSettings
-
+from kb.deps import MultipleFileField
 
 class MDEditorForm(forms.ModelForm):
     class Meta:
@@ -291,3 +294,31 @@ class StyleSettingsForm(forms.ModelForm):
             'page_text_color': 'Set the text color for the page using HEX code.',
             'page_font': 'Set the font used on the page.',
         }
+
+
+class FileUploadForm(forms.Form):
+    file = forms.FileField(label='Select file', widget=forms.ClearableFileInput(attrs={"class": "form-control",'allow_multiple_selected': True}))
+    upload_directory = forms.ChoiceField(label='Upload directory', required=True, widget=forms.Select(attrs={
+        'class': 'form-control'
+    }))
+    
+    def __init__(self, *args, **kwargs):
+        super(FileUploadForm, self).__init__(*args, **kwargs)
+        # Set the directory choices after initialization
+        self.fields['upload_directory'].choices = self.get_directory_choices()
+
+    def get_directory_choices(self):
+        # List directories from the base path
+        base_path = os.path.join(settings.MEDIA_ROOT, 'uploads')  # Replace with your actual path
+        try:
+            directories = ["/"+f for f in os.listdir(base_path) if os.path.isdir(os.path.join(base_path, f))]
+            directory_choices = [(os.path.join(base_path, d), d) for d in directories]
+        except FileNotFoundError:
+            directory_choices = []
+        return directory_choices
+    
+class DirectoryForm(forms.Form):
+    new_directory = forms.CharField(label='New directory', required=True,widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'placeholder': 'Enter new directory name'
+    }))
