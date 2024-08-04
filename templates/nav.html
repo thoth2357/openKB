@@ -68,9 +68,16 @@
                         <a class="nav-link" href="{% url "suggest" %}"><i class="fas fa-lightbulb"></i> Suggest</a>
                     </li>
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
-                </li>
+                
+                {% if not superuser_exists %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_setup' %}"><i class="fas fa-user-cog"></i> Login</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    </li>
+                {% endif %}
                 {% endif %}
             </ul>
         </div>

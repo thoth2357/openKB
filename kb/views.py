@@ -28,7 +28,7 @@ from kb.forms import (ArticleForm, ArticleSettingsForm, CustomUserCreationForm,
                       EditUserForm, LoginForm, MDEditorForm, MyAccountForm,
                       WebsiteSettingsForm,DisplaySettingsForm, StyleSettingsForm,
                       FileUploadForm,DirectoryForm)
-from kb.models import Article, ArticleSettings, WebsiteSettings, DisplaySettings, StyleSettings
+from kb.models import Article, ArticleSettings, WebsiteSettings, DisplaySettings, StyleSettings, CustomUser
 
 # Create your views here.
 BASE_UPLOAD_PATH = os.path.join(settings.MEDIA_ROOT, 'uploads')
@@ -106,8 +106,8 @@ class HomeView(View):
             # limit publish articles
             "published_articles":Article.objects.filter(published=True)[:DisplaySettings.objects.first().number_of_top_articles],
             "featured_articles": Article.objects.filter(featured=True)[:DisplaySettings.objects.first().featured_article_count],
-            'display_settings': DisplaySettings.objects.first()
-,
+            'display_settings': DisplaySettings.objects.first(),
+            'superuser_exists': CustomUser.objects.filter(is_superuser=True).exists(),
 
         }
         return render(request, "index.html", context)
@@ -520,3 +520,28 @@ def export_articles(request):
     zip_buffer.close()
     
     return response
+
+
+class AdminSetupView(View):
+    template_name = 'users/admin_setup.html'
+
+    def get(self, request, *args, **kwargs):
+        if CustomUser.objects.exists():
+            # Redirect to login if there are already users in the system
+            return redirect('login')
+        form = CustomUserCreationForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        if CustomUser.objects.exists():
+            return redirect('login')
+
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+            messages.success(request, "Admin user created successfully! Please log in.")
+            return redirect('login')
+        return render(request, self.template_name, {'form': form})
