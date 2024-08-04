@@ -12,6 +12,7 @@ Django = "^5.0.7"
 django-mdeditor = "^0.1.20"
 mistune = "^3.0.2"
 django-markdownify = "^0.9.5"
+django-jazzmin = "^3.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
