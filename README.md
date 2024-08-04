@@ -5,21 +5,27 @@
 
 openKB is a Markdown Knowledge base application (FAQ) built with Django. It is designed to be easy to use and install, with a focus on search functionality rather than nested categories. Simply search for what you want and select from the results.
 
-### Installation
+## Installation
 
 1. Clone the Repository: `git clone https://github.com/yourusername/openKB-Django.git && cd openKB-Django`
 2. Install dependencies using Poetry:
+
    ```bash
    poetry install
    ```
+
 3. Apply migrations:
+
    ```bash
    poetry run python manage.py migrate
    ```
+
 4. Start the application:
+
    ```bash
    poetry run python manage.py runserver
    ```
+
 5. Go to [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser
 
 ### Features
@@ -32,25 +38,25 @@ openKB is a Markdown Knowledge base application (FAQ) built with Django. It is d
 - **Google Analytics Integration**: Ability to add Google Analytics tracking code for monitoring site usage.
 - **Configurable Settings**: Customize website, article, display, and style settings via the admin interface.
 
-### Screenshots
+#### Screenshots
 
-**Homepage**
+##### Homepage
 
 ![Homepage](https://files.markmoffat.com/openkb/homepage.png)
 
-**Admin Editor**
+##### Admin Editor
 
 ![Editor](https://files.markmoffat.com/openkb/editor.png)
 
-**Article View**
+##### Article View
 
 ![Article view](https://files.markmoffat.com/openkb/articleview.png)
 
-**Admin Article Management**
+##### Admin Article Management
 
 ![Article filtering](https://files.markmoffat.com/openkb/articlefiltering.png)
 
-**Managing Files**
+##### Managing Files
 
 ![Files](https://files.markmoffat.com/openkb/files.png)
 
@@ -69,7 +75,7 @@ Configuration can be done via the `/settings` page in the admin interface or the
 - `website_title`: The title of your website.
 - `website_description`: A short description that appears in search engine results.
 - `show_website_logo`: Toggle to show or hide the website logo.
-- `base_url`: The root URL where your site is hosted. E.g., http://example.com/
+- `base_url`: The root URL where your site is hosted. E.g., <http://example.com/>
 - `allow_api_access`: Allow external systems to access site data via API.
 - `api_token`: The security token others will use to access your API.
 - `password_protect`: Require users to log in before accessing the site.
