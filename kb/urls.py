@@ -1,14 +1,14 @@
 from django.urls import path
 
-from kb.views import (AddArticleView, ArticleDetailView, ArticleListView,
-                      DeleteArticleView, DeleteUserView, EditArticleView,
-                      EditUserView, HomeView, LoginView, LogoutView,
-                      MyAccountView, NewUserView,
-                      SuggestView, UserListView, toggle_publish,
-                      validate_permalink, vote_article, ArticleSettingsView,
-                      DisplaySettingsView, StyleSettingsView, WebsiteSettingsView,
-                      FileManagementView, ImportArticlesView,export_articles,search_articles_view,
-                      AdminSetupView)
+from kb.views import (AddArticleView, AdminSetupView, ArticleDetailView,
+                      ArticleListView, ArticleSettingsView, DeleteArticleView,
+                      DeleteUserView, DisplaySettingsView, EditArticleView,
+                      EditUserView, FileManagementView, HomeView,
+                      ImportArticlesView, LoginView, LogoutView, MyAccountView,
+                      NewUserView, StyleSettingsView, SuggestView,
+                      UserListView, WebsiteSettingsView, export_articles,
+                      search_articles_view, toggle_publish, validate_permalink,
+                      vote_article)
 
 # urlpatterns
 urlpatterns = [

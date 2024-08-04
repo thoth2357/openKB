@@ -1,14 +1,15 @@
 import os
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
                                        UserCreationForm)
 from django.core.exceptions import ValidationError
-from django.conf import settings
 
-from kb.models import Article, ArticleSettings, WebsiteSettings, DisplaySettings,StyleSettings
-from kb.deps import MultipleFileField
+from kb.models import (Article, ArticleSettings, DisplaySettings,
+                       StyleSettings, WebsiteSettings)
+
 
 class MDEditorForm(forms.ModelForm):
     class Meta:

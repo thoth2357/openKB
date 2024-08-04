@@ -1,5 +1,6 @@
 
-from kb.models import WebsiteSettings, StyleSettings
+from kb.models import StyleSettings, WebsiteSettings
+
 
 def website_settings(request):
     # Retrieve the settings; you may handle the case when there are no settings.

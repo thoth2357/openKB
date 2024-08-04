@@ -1,5 +1,8 @@
 from django.core.management.base import BaseCommand
-from kb.models import WebsiteSettings, ArticleSettings, DisplaySettings,StyleSettings
+
+from kb.models import (ArticleSettings, DisplaySettings, StyleSettings,
+                       WebsiteSettings)
+
 
 class Command(BaseCommand):
     help = 'Initialize settings models with default values'

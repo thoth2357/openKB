@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import validate_image_file_extension
 
+
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 

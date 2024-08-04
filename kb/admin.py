@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.shortcuts import redirect
 from django.urls import reverse
-from kb.models import Article, CustomUser, WebsiteSettings, ArticleSettings, DisplaySettings, StyleSettings
+
+from kb.models import (Article, ArticleSettings, CustomUser, DisplaySettings,
+                       StyleSettings, WebsiteSettings)
 
 # Register your models here.
 
