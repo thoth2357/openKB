@@ -70,7 +70,6 @@
             <a href="mailto:?subject={{ article.title|urlencode }}&body=Check out this article: {{ request.build_absolute_uri }}" class="btn btn-info">
                 <i class="fas fa-envelope"></i> Share via Email
             </a>
-            <a href="{% url 'edit_article' article.id %}" class="btn btn-primary">Edit Article</a>
         </div>
     </div>
 </div>
