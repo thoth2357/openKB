@@ -35,18 +35,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
-
-{% block scripts %}
-{{ block.super }}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var fileInput = document.getElementById('zipFile');
-    var fileLabel = document.querySelector('label[for="zipFile"]');
-    
-    fileInput.addEventListener('change', function(event) {
-        var fileName = event.target.value.split('\\').pop();
-        fileLabel.textContent = fileName ? fileName : 'Select zip';
-    });
-});
-</script>
-{% endblock %}

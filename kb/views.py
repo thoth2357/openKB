@@ -1,6 +1,8 @@
 import json
 import os
 import zipfile
+from io import BytesIO
+
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -470,3 +472,26 @@ class ImportArticlesView(View):
 
     def get(self, request):
         return render(request, 'import.html')  # Assuming the template name is 'import.html'
+
+
+def export_articles(request):
+    # Filter for published articles
+    articles = Article.objects.all()
+    
+    # In-memory file to create the zip
+    zip_buffer = BytesIO()
+    
+    with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+        for article in articles:
+            filename = f"{article.title.replace(' ', '_')}.md"
+            # Write the article content into a Markdown file in the zip
+            zip_file.writestr(filename, article.content)
+    
+    # Prepare the response, setting the correct MIME type and filename
+    response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=exported_articles.zip'
+    
+    # Close the buffer
+    zip_buffer.close()
+    
+    return response

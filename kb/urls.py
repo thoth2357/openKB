@@ -7,7 +7,7 @@ from kb.views import (AddArticleView, ArticleDetailView, ArticleListView,
                       SuggestView, UserListView, toggle_publish,
                       validate_permalink, vote_article, ArticleSettingsView,
                       DisplaySettingsView, StyleSettingsView, WebsiteSettingsView,
-                      FileManagementView, ImportArticlesView)
+                      FileManagementView, ImportArticlesView,export_articles)
 
 # urlpatterns
 urlpatterns = [
@@ -48,6 +48,9 @@ urlpatterns = [
     
     # import url
     path('import/', ImportArticlesView.as_view(), name='import_articles'),
+
+    # export url
+    path('export/', export_articles, name='export_articles'),
 
     # Misc Urls
     path('validate_permalink/', validate_permalink, name='validate_permalink'),
