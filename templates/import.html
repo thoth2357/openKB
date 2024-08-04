@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Import{% endblock %}
+
+{% block content %}
+{% include "nav.html" %}
+<div class="container mt-5">
+    <h1>Import</h1>
+    <p>You are able to bulk import articles by uploading a Zip file containing files with Markdown content. When new articles are created, the name of the file will become the title/permalink. All imported articles will be set to a draft status.</p>
+    
+    <form action="{% url 'import_articles' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="zipFile" name="zip_file" required>
+                <label class="custom-file-label" for="zipFile">Select zip</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Import zip</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var fileInput = document.getElementById('zipFile');
+    var fileLabel = document.querySelector('label[for="zipFile"]');
+    
+    fileInput.addEventListener('change', function(event) {
+        var fileName = event.target.value.split('\\').pop();
+        fileLabel.textContent = fileName ? fileName : 'Select zip';
+    });
+});
+</script>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var fileInput = document.getElementById('zipFile');
+    var fileLabel = document.querySelector('label[for="zipFile"]');
+    
+    fileInput.addEventListener('change', function(event) {
+        var fileName = event.target.value.split('\\').pop();
+        fileLabel.textContent = fileName ? fileName : 'Select zip';
+    });
+});
+</script>
+{% endblock %}

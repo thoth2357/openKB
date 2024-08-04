@@ -1,5 +1,6 @@
 import json
 import os
+import zipfile
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
@@ -436,3 +437,36 @@ class FileManagementView(View):
             'file_form': file_form,
             'directory_form': directory_form,
         })
+
+
+class ImportArticlesView(View):
+    def post(self, request):
+        zip_file = request.FILES.get('zip_file')
+        if zip_file and zipfile.is_zipfile(zip_file):
+            try:
+                with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+                    # Assuming files are to be uploaded to 'media/uploads'
+                    zip_ref.extractall('media/uploads')
+                    # Process files here or signal processing method
+                    self.process_imported_files('media/uploads')
+                messages.success(request, 'Articles imported successfully.')
+            except Exception as e:
+                messages.error(request, f'Error importing files: {e}')
+        else:
+            messages.error(request, 'Invalid zip file.')
+        return redirect('import_articles')
+    
+    def process_imported_files(self, directory):
+        # Implement file processing, e.g., reading Markdown, creating article instances
+        for filename in os.listdir(directory):
+            if filename.endswith('.md'):
+                filepath = os.path.join(directory, filename)
+                with open(filepath, 'r') as file:
+                    content = file.read()
+                    # Example: Create a new Article instance
+                    # Article.objects.create(title=filename, content=content, status='draft')
+                    pass
+        # Consider cleaning up the directory after processing
+
+    def get(self, request):
+        return render(request, 'import.html')  # Assuming the template name is 'import.html'
