@@ -72,6 +72,31 @@ def toggle_publish(request, pk):
     except Article.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Article not found'}, status=404)
     
+def search_articles_view(request):
+    query = request.GET.get('query', '')
+    
+    if query:
+        # Filters articles based on the query if it's not empty
+        articles = Article.objects.filter(title__icontains=query).order_by('-created')[:DisplaySettings.objects.first().number_of_top_articles]
+    else:
+        # Returns all articles if the query is empty
+        articles = Article.objects.all().order_by('-created')[:DisplaySettings.objects.first().number_of_top_articles]  # Adjust limit as needed
+    
+    data = {
+        'featured': [
+            {'title': article.title, 'url': article.get_absolute_url()} for article in articles if article.featured
+        ],
+        'top': [
+            {
+                'title': article.title,
+                'url': article.get_absolute_url(),
+                'viewCount': article.view_count,
+                'date': article.created.strftime('%Y-%m-%d')
+            } for article in articles
+        ],
+    }
+    return JsonResponse(data)
+
 class HomeView(View):
     """
     Class based view for the home page.

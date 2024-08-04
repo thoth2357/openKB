@@ -7,7 +7,7 @@ from kb.views import (AddArticleView, ArticleDetailView, ArticleListView,
                       SuggestView, UserListView, toggle_publish,
                       validate_permalink, vote_article, ArticleSettingsView,
                       DisplaySettingsView, StyleSettingsView, WebsiteSettingsView,
-                      FileManagementView, ImportArticlesView,export_articles)
+                      FileManagementView, ImportArticlesView,export_articles,search_articles_view)
 
 # urlpatterns
 urlpatterns = [
@@ -55,5 +55,7 @@ urlpatterns = [
     # Misc Urls
     path('validate_permalink/', validate_permalink, name='validate_permalink'),
     path('article/<int:pk>/vote/', vote_article, name='article_vote'),
+    path('search_articles', search_articles_view, name='search_articles'),
+
 
 ]

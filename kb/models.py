@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from django.contrib.auth.models import AbstractUser
 from mdeditor.fields import MDTextField
@@ -19,6 +20,13 @@ class Article(models.Model):
     seo_description = models.TextField(default='')
     author = models.ForeignKey('CustomUser', on_delete=models.CASCADE, null=True)
     featured = models.BooleanField(default=False)
+    
+    def get_absolute_url(self):
+        if self.permalink:
+            return reverse('article_detail', kwargs={'slug': self.permalink})
+        else:
+            return reverse('article_detail_by_pk', kwargs={'pk': self.pk})
+    
     def __str__(self):
         return self.title
     

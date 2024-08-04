@@ -8,10 +8,7 @@
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search the knowledge base" aria-label="Search the knowledge base" aria-describedby="button-search" style="height: 50px; font-size: 1.2em;">
-                    <div class="input-group-append">
-                        <button class="btn btn-success" type="button" id="button-search" style="height: 50px; font-size: 1.2em;">Search</button>
-                    </div>
+                    <input type="text" id="search_articles" class="form-control" placeholder="Search the knowledge base" aria-label="Search the knowledge base" oninput="searchArticles()" aria-describedby="button-search" style="height: 50px; font-size: 1.2em;">
                 </div>
             </div>
         </div>
@@ -23,14 +20,14 @@
                         <p class="mb-0" style="white-space: nowrap;">Featured articles</p>
                     </div>
                     <div class="card-body p-0">
-                        <table class="table m-0">
+                        <table class="table m-0" id="featured_articles_table">
                             <tbody>
                                 {% for article in featured_articles|slice:":display_settings.featured_article_count" %}
-                                    <tr>
-                                        <td class="py-3">
-                                            <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td class="py-3">
+                                        <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
+                                    </td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -44,22 +41,22 @@
                         <p class="mb-0">Top articles</p>
                     </div>
                     <div class="card-body p-0">
-                        <table class="table m-0">
+                        <table class="table m-0" id="top_articles_table">
                             <tbody>
                                 {% for article in published_articles|slice:":display_settings.number_of_top_articles" %}
-                                    <tr class="py-3">
-                                        <td class="py-3">
-                                            <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
-                                        </td>
-                                        <td class="text-right py-3">
-                                            {% if display_settings.show_view_count %}
-                                                <strong>View count:</strong> {{article.view_count}} /
-                                            {% endif %}
-                                            {% if display_settings.show_published_date %}
-                                                <strong>Date:</strong> {{article.created|date:websettings.date_format}}
-                                            {% endif %}
-                                        </td>
-                                    </tr>
+                                <tr class="py-3">
+                                    <td class="py-3">
+                                        <a href="{% if article.permalink %}{% url 'article_detail' slug=article.permalink %}{% else %}{% url 'article_detail_by_pk' pk=article.id %}{% endif %}">{{ article.title }}</a>
+                                    </td>
+                                    <td class="text-right py-3">
+                                        {% if display_settings.show_view_count %}
+                                        <strong>View count:</strong> {{article.view_count}} /
+                                        {% endif %}
+                                        {% if display_settings.show_published_date %}
+                                        <strong>Date:</strong> {{article.created|date:websettings.date_format}}
+                                        {% endif %}
+                                    </td>
+                                </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -73,3 +70,48 @@
     {% include "footer.html" %}
     {% include "messages.html" %}
 {% endblock misc %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    document.getElementById('search_articles').addEventListener('input', function() {
+        searchArticles();
+    });
+
+    function searchArticles() {
+        const query = document.getElementById('search_articles').value;
+        if (query.length === 0 || query.length > 1) {  // Trigger search on clear or when query length > 1
+            fetch(`/search_articles?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                updateArticleTables(data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function updateArticleTables(data) {
+        const featuredTable = document.getElementById('featured_articles_table');
+        const topArticlesTable = document.getElementById('top_articles_table');
+        featuredTable.innerHTML = '';
+        topArticlesTable.innerHTML = '';
+
+        data.featured.forEach(article => {
+            featuredTable.innerHTML += `<tr><td class="py-3"><a href="${article.url}">${article.title}</a></td></tr>`;
+        });
+
+        data.top.forEach(article => {
+            topArticlesTable.innerHTML += `<tr>
+                <td class="py-3">
+                    <a href="${article.url}">${article.title}</a>
+                </td>
+                <td class="text-right py-3">
+                    <strong>View count:</strong> ${article.viewCount} /
+                    <strong>Date:</strong> ${article.date}
+                </td>
+            </tr>`;
+        });
+    }
+</script>
+
+{% endblock %}
