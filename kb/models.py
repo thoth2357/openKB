@@ -46,7 +46,7 @@ class CustomUser(AbstractUser):
 
 class WebsiteSettings(models.Model):
     website_title = models.CharField(max_length=255, blank=True, default='openKB')
-    website_description = models.TextField(blank=True, default='openKB is an Open Source Node.js Markdown based knowledge base/FAQ/Wiki app.')
+    website_description = models.TextField(blank=True, default='openKB is an Open Source Django Markdown based knowledge base/FAQ/Wiki app.')
     show_website_logo = models.BooleanField(default=True)
     website_context_base_url = models.URLField(blank=True, default='http://127.0.0.1:4444/openkb/')
     allow_api_access = models.BooleanField(default=False)
@@ -94,13 +94,13 @@ class DisplaySettings(models.Model):
 
 
 class StyleSettings(models.Model):
-    header_background_color = models.CharField(max_length=7, blank=True, default='#343a40')
-    header_text_color = models.CharField(max_length=7, blank=True, default='#ffffff')
+    header_background_color = models.CharField(max_length=7, blank=True, default='#2D3E50')
+    header_text_color = models.CharField(max_length=7, blank=True, default='#FFFFFF')
     footer_background_color = models.CharField(max_length=7, blank=True, default='#343a40')
     footer_text_color = models.CharField(max_length=7, blank=True, default='#ffffff')
     button_background_color = models.CharField(max_length=7, blank=True, default='#007bff')
-    button_text_color = models.CharField(max_length=7, blank=True, default='#ffffff')
-    link_color = models.CharField(max_length=7, blank=True, default='#007bff')
+    button_text_color = models.CharField(max_length=7, blank=True, default='#7a3838')
+    link_color = models.CharField(max_length=7, blank=True, default='#0f000c')
     page_text_color = models.CharField(max_length=7, blank=True, default='#212529')
     page_font = models.CharField(max_length=50, blank=True)
 
