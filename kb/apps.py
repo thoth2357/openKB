@@ -6,4 +6,4 @@ class KbConfig(AppConfig):
     name = "kb"
 
     def ready(self):
-        pass
+        import kb.signals
